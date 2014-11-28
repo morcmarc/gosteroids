@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"runtime"
 
 	"github.com/codegangsta/cli"
 	"github.com/morcmarc/gosteroids/game"
@@ -17,5 +18,7 @@ func main() {
 }
 
 func runGame(c *cli.Context) {
+	runtime.LockOSThread()
+
 	game.Start()
 }

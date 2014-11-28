@@ -1,16 +1,14 @@
 package game
 
 import (
-	"runtime"
+	"github.com/morcmarc/gosteroids/game/shaders"
 
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
 	"github.com/go-gl/glu"
 )
 
-func InitWindow(w, h int, t string, ctrlChnl chan uint8) {
-	runtime.LockOSThread()
-
+func InitWindow(width, height int, title string, ctrlChnl chan uint8) {
 	glfw.SetErrorCallback(errorCallback)
 
 	if !glfw.Init() {
@@ -22,7 +20,7 @@ func InitWindow(w, h int, t string, ctrlChnl chan uint8) {
 	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True)
 	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
 
-	window, err := glfw.CreateWindow(w, h, t, nil, nil)
+	window, err := glfw.CreateWindow(width, height, title, nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -30,8 +28,32 @@ func InitWindow(w, h int, t string, ctrlChnl chan uint8) {
 	window.MakeContextCurrent()
 	glfw.SwapInterval(1)
 	gl.Init()
-	initScene()
 
+	vao := gl.GenVertexArray()
+	vao.Bind()
+
+	vbo := gl.GenBuffer()
+	vbo.Bind(gl.ARRAY_BUFFER)
+
+	verticies := []float32{0, 1, 0, -1, -1, 0, 1, -1, 0}
+
+	gl.BufferData(gl.ARRAY_BUFFER, len(verticies)*4, verticies, gl.STATIC_DRAW)
+
+	program := bindShaders()
+
+	positionAttrib := program.GetAttribLocation("position")
+	positionAttrib.AttribPointer(3, gl.FLOAT, false, 0, nil)
+	positionAttrib.EnableArray()
+
+	mainLoop(window, ctrlChnl)
+
+	defer positionAttrib.DisableArray()
+	defer window.Destroy()
+	defer glfw.Terminate()
+	defer program.Delete()
+}
+
+func mainLoop(window *glfw.Window, ctrlChnl chan uint8) {
 	for !window.ShouldClose() {
 		drawScene()
 
@@ -58,17 +80,23 @@ func InitWindow(w, h int, t string, ctrlChnl chan uint8) {
 			ctrlChnl <- RIGHT
 		}
 	}
-
-	defer window.Destroy()
-	defer glfw.Terminate()
 }
 
-func initScene() {
-	gl.ClearColor(0.0, 0.0, 0.0, 0.0)
+func bindShaders() gl.Program {
+	program := gl.CreateProgram()
+	program.AttachShader(shaders.GetSpaceshipVertex())
+	program.AttachShader(shaders.GetSpaceshipFragment())
+
+	program.BindFragDataLocation(0, "outColor")
+	program.Link()
+	program.Use()
+
+	return program
 }
 
 func drawScene() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 }
 
 func errorCallback(err glfw.ErrorCode, desc string) {
