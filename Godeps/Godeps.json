@@ -1,0 +1,27 @@
+{
+	"ImportPath": "github.com/morcmarc/gosteroids",
+	"GoVersion": "go1.3.3",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-26-gf7ebb76",
+			"Rev": "f7ebb761e83e21225d1d8954fde853bf8edd46c4"
+		},
+		{
+			"ImportPath": "github.com/go-gl/gl",
+			"Comment": "go.r60-143-gc925ec7",
+			"Rev": "c925ec71e205af06159ce369a0dba3f2fe6f32c1"
+		},
+		{
+			"ImportPath": "github.com/go-gl/glfw3",
+			"Rev": "4fb015d6b051418b3044ca7fdb48d2e6cfcba0ca"
+		},
+		{
+			"ImportPath": "github.com/go-gl/glu",
+			"Rev": "259c0c56e294d50d00859fae707e76b6231241e0"
+		}
+	]
+}
