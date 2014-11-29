@@ -32,7 +32,6 @@ func Init(width, height int, title string, ctrlChnl chan uint8) {
 		// Reset
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
-		gl.LoadIdentity()
 
 		scene.Draw()
 
@@ -50,10 +49,10 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 	}
 	glfw.SwapInterval(1)
 
-	// glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	// glfw.WindowHint(glfw.ContextVersionMinor, 3)
-	// glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True)
-	// glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True)
+	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
 
 	window, err := glfw.CreateWindow(width, height, title, nil, nil)
 	if err != nil {
@@ -66,7 +65,7 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 
 	gl.Init()
 	if err = glh.CheckGLError(); err != nil {
-		panic(err)
+		// panic(err)
 	}
 
 	renderer := gl.GetString(gl.RENDERER)

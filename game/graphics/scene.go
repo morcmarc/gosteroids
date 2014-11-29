@@ -15,8 +15,8 @@ type SceneObject interface {
 
 func NewScene() *Scene {
 	s := &Scene{
-		Background: NewBackground(),
 		Spaceship:  NewSpaceship(),
+		Background: NewBackground(),
 	}
 	return s
 }
