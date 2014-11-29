@@ -18,30 +18,19 @@ func NewBackground() *Background {
 }
 
 func (b *Background) Draw() {
-	gl.Enable(gl.TEXTURE_2D)
-	gl.EnableClientState(gl.VERTEX_ARRAY)
-	gl.EnableClientState(gl.TEXTURE_COORD_ARRAY)
+	b.Texture.Bind(gl.TEXTURE_2D)
 
-	vertices := []float32{
-		-1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, -1.0, 0.0,
-		-1.0, -1.0, 0.0,
-	}
-	texVertices := []float32{
-		0.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 1.0, 0.0,
-		0.0, 1.0, 0.0,
-	}
+	gl.Begin(gl.QUADS)
 
-	gl.VertexPointer(3, gl.FLOAT, 0, &vertices)
-	gl.TexCoordPointer(3, gl.FLOAT, 0, &texVertices)
+	gl.Normal3f(0, 0, 1)
+	gl.TexCoord2f(0, 0)
+	gl.Vertex3f(-1, -1, 1)
+	gl.TexCoord2f(1, 0)
+	gl.Vertex3f(1, -1, 1)
+	gl.TexCoord2f(1, 1)
+	gl.Vertex3f(1, 1, 1)
+	gl.TexCoord2f(0, 1)
+	gl.Vertex3f(-1, 1, 1)
 
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
-	gl.DrawArrays(gl.QUADS, 0, 4)
-
-	gl.DisableClientState(gl.TEXTURE_COORD_ARRAY)
-	gl.DisableClientState(gl.VERTEX_ARRAY)
-	gl.Disable(gl.TEXTURE_2D)
+	gl.End()
 }

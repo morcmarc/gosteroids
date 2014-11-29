@@ -1,13 +1,13 @@
 package game
 
 const (
-	WIDTH  int    = 600
-	HEIGHT int    = 600
-	TITLE  string = "Gosteroids"
+	Width  int    = 600
+	Height int    = 600
+	Title  string = "Gosteroids"
 )
 
 func Start() {
 	ctrlChnl := make(chan uint8)
 	InitControls(ctrlChnl)
-	InitWindow(WIDTH, HEIGHT, TITLE, ctrlChnl)
+	InitWindow(Width, Height, Title, ctrlChnl)
 }

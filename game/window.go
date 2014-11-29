@@ -4,16 +4,10 @@ import (
 	"fmt"
 
 	"github.com/morcmarc/gosteroids/game/objects"
-	"github.com/morcmarc/gosteroids/game/shaders"
 
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
 	"github.com/go-gl/glu"
-)
-
-var (
-	vArray  gl.VertexArray
-	vBuffer gl.Buffer
 )
 
 func InitWindow(width, height int, title string, ctrlChnl chan uint8) {
@@ -22,11 +16,6 @@ func InitWindow(width, height int, title string, ctrlChnl chan uint8) {
 	if !glfw.Init() {
 		panic("Could not init glfw")
 	}
-
-	glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	glfw.WindowHint(glfw.ContextVersionMinor, 3)
-	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True)
-	glfw.WindowHint(glfw.OpenglProfile, glfw.OpenglCoreProfile)
 
 	window, err := glfw.CreateWindow(width, height, title, nil, nil)
 	if err != nil {
@@ -37,33 +26,14 @@ func InitWindow(width, height int, title string, ctrlChnl chan uint8) {
 	glfw.SwapInterval(1)
 	gl.Init()
 
-	gl.Disable(gl.DEPTH_TEST)
-	gl.Enable(gl.MULTISAMPLE)
-	gl.Disable(gl.LIGHTING)
-	gl.Enable(gl.COLOR_MATERIAL)
+	gl.Enable(gl.TEXTURE_2D)
 
 	fmt.Println(":: OpenGL Context initialized.")
 
-	vArray = gl.GenVertexArray()
-	vArray.Bind()
-
-	vBuffer = gl.GenBuffer()
-	vBuffer.Bind(gl.ARRAY_BUFFER)
-
-	program := bindShaders()
-	fmt.Println(":: Compiled shaders.")
-
-	positionAttrib := program.GetAttribLocation("position")
-	positionAttrib.AttribPointer(3, gl.FLOAT, false, 0, nil)
-	positionAttrib.EnableArray()
-
 	mainLoop(window, ctrlChnl)
 
-	defer positionAttrib.DisableArray()
 	defer window.Destroy()
 	defer glfw.Terminate()
-	defer program.Delete()
-	defer vBuffer.Delete()
 }
 
 func mainLoop(window *glfw.Window, ctrlChnl chan uint8) {
@@ -100,28 +70,11 @@ func mainLoop(window *glfw.Window, ctrlChnl chan uint8) {
 	}
 }
 
-func bindShaders() gl.Program {
-	program := gl.CreateProgram()
-	shaders := shaders.CompileAll()
-
-	for _, shader := range shaders {
-		program.AttachShader(shader)
-		defer shader.Delete()
-	}
-
-	program.BindFragDataLocation(0, "outColor")
-	program.Link()
-	program.Use()
-
-	return program
-}
-
 func drawScene(bg *objects.Background, sship *objects.Spaceship) {
 	gl.ClearColor(0.1, 0.1, 0.2, 0.5)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	bg.Draw()
-	sship.Draw()
 }
 
 func errorCallback(err glfw.ErrorCode, desc string) {
