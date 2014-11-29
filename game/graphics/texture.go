@@ -1,8 +1,7 @@
-package utils
+package graphics
 
 import (
 	"errors"
-	"fmt"
 	"image"
 	"image/png"
 	"io"
@@ -53,8 +52,6 @@ func CreateTexture(r io.Reader) (gl.Texture, error) {
 		copy(data[dest:dest+lineLen], rgbaImg.Pix[src:src+rgbaImg.Stride])
 		dest -= lineLen
 	}
-
-	fmt.Printf(":: Loading texture, w: %dpx, h: %dpx...\n", imgWidth, imgHeight)
 
 	gl.TexImage2D(gl.TEXTURE_2D, 0, 4, imgWidth, imgHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, data)
 
