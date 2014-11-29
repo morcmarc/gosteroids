@@ -10,20 +10,20 @@ import (
 	"github.com/go-gl/gl"
 )
 
-func OpenImageAsTexture(filename string, loc gl.GLenum) gl.Texture {
+func OpenImageAsTexture(filename string) gl.Texture {
 	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
-	t, err := CreateTexture(f, loc)
+	t, err := CreateTexture(f)
 	if err != nil {
 		panic(err)
 	}
 	return t
 }
 
-func CreateTexture(r io.Reader, loc gl.GLenum) (gl.Texture, error) {
+func CreateTexture(r io.Reader) (gl.Texture, error) {
 	img, err := png.Decode(r)
 	if err != nil {
 		return gl.Texture(0), err
@@ -35,7 +35,6 @@ func CreateTexture(r io.Reader, loc gl.GLenum) (gl.Texture, error) {
 	}
 
 	textureId := gl.GenTexture()
-	gl.ActiveTexture(loc)
 	textureId.Bind(gl.TEXTURE_2D)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)

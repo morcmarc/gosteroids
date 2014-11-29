@@ -73,13 +73,11 @@ func NewSpaceship() *Spaceship {
 }
 
 func (s *Spaceship) Draw() {
-	gl.EnableClientState(gl.VERTEX_ARRAY)
 	s.Program.Use()
+	defer s.Program.Unuse()
+
 	s.Vao.Bind()
+	defer s.Vao.Unbind()
 
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
-
-	s.Vao.Unbind()
-	s.Program.Unuse()
-	gl.DisableClientState(gl.VERTEX_ARRAY)
 }

@@ -30,7 +30,7 @@ func Init(width, height int, title string, ctrlChnl chan uint8) {
 
 	for !window.ShouldClose() {
 		// Reset
-		gl.Clear(gl.COLOR_BUFFER_BIT)
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 
 		scene.Draw()
@@ -49,6 +49,7 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 	}
 	glfw.SwapInterval(1)
 
+	glfw.WindowHint(glfw.Samples, 4)
 	glfw.WindowHint(glfw.ContextVersionMajor, 3)
 	glfw.WindowHint(glfw.ContextVersionMinor, 3)
 	glfw.WindowHint(glfw.OpenglForwardCompatible, glfw.True)
@@ -73,10 +74,8 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 	fmt.Printf("Renderer: %s\n", renderer)
 	fmt.Printf("OpenGL version supported: %s\n", version)
 
-	gl.Disable(gl.DEPTH_TEST)
-	gl.Enable(gl.MULTISAMPLE)
-	gl.Enable(gl.TEXTURE_2D)
-	gl.Disable(gl.LIGHTING)
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 
 	return window, nil
