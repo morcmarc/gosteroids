@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"fmt"
+	. "github.com/morcmarc/gosteroids/game/shared"
 )
 
 type Object interface {
@@ -21,6 +21,17 @@ func NewObjectManager() *ObjectManager {
 
 func (o *ObjectManager) Listen(controlChanel chan uint8) {
 	for m := range controlChanel {
-		fmt.Printf("Msg: %d\n", m)
+		if m == Throttle {
+			o.Spaceship.Position[1] += 0.01
+		}
+		if m == Break {
+			o.Spaceship.Position[1] -= 0.01
+		}
+		if m == Left {
+			o.Spaceship.Position[2] -= 0.1
+		}
+		if m == Right {
+			o.Spaceship.Position[2] += 0.1
+		}
 	}
 }
