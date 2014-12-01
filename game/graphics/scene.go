@@ -1,7 +1,7 @@
 package graphics
 
 import (
-// "github.com/morcmarc/gosteroids/game/objects"
+	o "github.com/morcmarc/gosteroids/game/objects"
 )
 
 type Scene struct {
@@ -13,9 +13,9 @@ type SceneObject interface {
 	Draw()
 }
 
-func NewScene() *Scene {
+func NewScene(om *o.ObjectManager) *Scene {
 	s := &Scene{
-		Spaceship:  NewSpaceship(),
+		Spaceship:  NewSpaceship(om.Spaceship),
 		Background: NewBackground(),
 	}
 	return s

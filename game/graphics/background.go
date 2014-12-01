@@ -12,7 +12,7 @@ out vec2 UV;
 
 void main()
 {
-    gl_Position = vec4(position, 1.0);
+    gl_Position = vec4(vertexPosition_modelspace, 1.0);
     UV = vertexUV;
 }`
 

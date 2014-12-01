@@ -1,10 +1,8 @@
 package game
 
 import (
-	"fmt"
-
 	"github.com/morcmarc/gosteroids/game/graphics"
-	. "github.com/morcmarc/gosteroids/game/shared"
+	"github.com/morcmarc/gosteroids/game/objects"
 )
 
 const (
@@ -14,28 +12,10 @@ const (
 )
 
 func Start() {
-	ctrlChnl := make(chan uint8)
-	InitControls(ctrlChnl)
-	graphics.Init(Width, Height, Title, ctrlChnl)
-}
+	controlChanel := make(chan uint8)
+	objectManager := objects.NewObjectManager()
 
-func InitControls(keyEvents <-chan uint8) {
-	go func() {
-		for e := range keyEvents {
-			switch e {
-			case Throttle:
-				fmt.Print("↑")
-				break
-			case Break:
-				fmt.Print("↓")
-				break
-			case Left:
-				fmt.Print("←")
-				break
-			case Right:
-				fmt.Print("→")
-				break
-			}
-		}
-	}()
+	go objectManager.Listen(controlChanel)
+
+	graphics.Init(Width, Height, Title, controlChanel, objectManager)
 }

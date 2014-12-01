@@ -8,16 +8,19 @@ import (
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
 	"github.com/go-gl/glh"
+	o "github.com/morcmarc/gosteroids/game/objects"
 	. "github.com/morcmarc/gosteroids/game/shared"
 )
 
 var (
 	controlChanel chan uint8
+	objectManager *o.ObjectManager
 	ErrGLFWFailed = errors.New("Failed to init glfw")
 )
 
-func Init(width, height int, title string, ctrlChnl chan uint8) {
-	controlChanel = ctrlChnl
+func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
+	controlChanel = cc
+	objectManager = om
 
 	window, err := initGL(width, height, title)
 	if err != nil {
@@ -26,7 +29,7 @@ func Init(width, height int, title string, ctrlChnl chan uint8) {
 	}
 	defer glfw.Terminate()
 
-	scene := NewScene()
+	scene := NewScene(objectManager)
 
 	for !window.ShouldClose() {
 		// Reset

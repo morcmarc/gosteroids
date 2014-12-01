@@ -2,6 +2,7 @@ package graphics
 
 import (
 	"github.com/go-gl/gl"
+	o "github.com/morcmarc/gosteroids/game/objects"
 )
 
 const ss_vertex = `#version 330
@@ -24,19 +25,21 @@ void main()
 
 type Spaceship struct {
 	SceneObject
+	SSObject *o.Spaceship
 	Vertices []float32
 	Vao      gl.VertexArray
 	Vbo      gl.Buffer
 	Program  gl.Program
 }
 
-func NewSpaceship() *Spaceship {
+func NewSpaceship(sso *o.Spaceship) *Spaceship {
 	ss := &Spaceship{
 		Vertices: []float32{
 			-0.05, 0.0, 0.0,
 			0.05, 0.0, 0.0,
 			0.0, 0.1, 0.0,
 		},
+		SSObject: sso,
 	}
 
 	ss.Vbo = gl.GenBuffer()

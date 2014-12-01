@@ -15,3 +15,7 @@ func NewSpaceship() *Spaceship {
 	}
 	return ss
 }
+
+func (s *Spaceship) Update() {
+
+}
