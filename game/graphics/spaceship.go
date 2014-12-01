@@ -71,6 +71,7 @@ func NewSpaceship(sso *o.Spaceship) *Spaceship {
 
 	ss.Program.Link()
 	ss.Program.Use()
+	defer ss.Program.Unuse()
 	ss.Program.BindFragDataLocation(0, "outColor")
 
 	vrtx := ss.Program.GetAttribLocation("vrtx")
