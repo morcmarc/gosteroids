@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
@@ -36,11 +37,14 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 
+		scene.Update()
 		scene.Draw()
 
 		// Render
 		window.SwapBuffers()
 		glfw.PollEvents()
+
+		time.Sleep(1000 / 60 * time.Millisecond)
 	}
 }
 

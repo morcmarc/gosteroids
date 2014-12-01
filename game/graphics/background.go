@@ -30,7 +30,7 @@ out vec4 outColor;
 void main()
 {
     // outColor = vec4(texture2D(texSampler, out_coord).rgb, 1.0);
-    outColor = vec4(out_coord[0], out_coord[1], 1.0, 1.0);
+    outColor = vec4(out_coord[0], out_coord[1], 0.70, 1.0);
 }`
 
 type Background struct {

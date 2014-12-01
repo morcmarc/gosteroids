@@ -19,19 +19,23 @@ func NewObjectManager() *ObjectManager {
 	return om
 }
 
+func (o *ObjectManager) Update() {
+	o.Spaceship.Update()
+}
+
 func (o *ObjectManager) Listen(controlChanel chan uint8) {
 	for m := range controlChanel {
 		if m == Throttle {
-			o.Spaceship.Position[1] += 0.01
+			o.Spaceship.Accelerate()
 		}
 		if m == Break {
-			o.Spaceship.Position[1] -= 0.01
+			o.Spaceship.Decelerate()
 		}
 		if m == Left {
-			o.Spaceship.Position[2] -= 0.1
+			o.Spaceship.Rotate(Left)
 		}
 		if m == Right {
-			o.Spaceship.Position[2] += 0.1
+			o.Spaceship.Rotate(Right)
 		}
 	}
 }

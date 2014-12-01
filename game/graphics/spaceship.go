@@ -43,9 +43,9 @@ type Spaceship struct {
 func NewSpaceship(sso *o.Spaceship) *Spaceship {
 	ss := &Spaceship{
 		Vertices: []float32{
-			-0.05, 0.0,
-			0.05, 0.0,
-			0.0, 0.1,
+			-0.02, -0.05,
+			0.02, -0.05,
+			0.0, 0.05,
 		},
 		SSObject: sso,
 	}
@@ -92,9 +92,9 @@ func (s *Spaceship) Draw() {
 
 	p := s.Program.GetUniformLocation("position")
 	p.Uniform3f(
-		s.SSObject.Position[0],
-		s.SSObject.Position[1],
-		s.SSObject.Position[2])
+		float32(s.SSObject.Position[0]),
+		float32(s.SSObject.Position[1]),
+		float32(s.SSObject.Position[2]))
 
 	gl.DrawArrays(gl.TRIANGLES, 0, len(s.Vertices))
 }

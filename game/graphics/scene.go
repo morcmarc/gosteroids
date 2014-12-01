@@ -5,8 +5,9 @@ import (
 )
 
 type Scene struct {
-	Background *Background
-	Spaceship  *Spaceship
+	ObjectManager *o.ObjectManager
+	Background    *Background
+	Spaceship     *Spaceship
 }
 
 type SceneObject interface {
@@ -15,10 +16,15 @@ type SceneObject interface {
 
 func NewScene(om *o.ObjectManager) *Scene {
 	s := &Scene{
-		Spaceship:  NewSpaceship(om.Spaceship),
-		Background: NewBackground(),
+		ObjectManager: om,
+		Spaceship:     NewSpaceship(om.Spaceship),
+		Background:    NewBackground(),
 	}
 	return s
+}
+
+func (s *Scene) Update() {
+	s.ObjectManager.Update()
 }
 
 func (s *Scene) Draw() {
