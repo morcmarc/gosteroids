@@ -11,7 +11,7 @@ type Scene struct {
 }
 
 type SceneObject interface {
-	Draw()
+	Draw(ct float32)
 }
 
 func NewScene(om *o.ObjectManager) *Scene {
@@ -20,14 +20,15 @@ func NewScene(om *o.ObjectManager) *Scene {
 		Spaceship:     NewSpaceship(om.Spaceship),
 		Background:    NewBackground(),
 	}
+
 	return s
 }
 
-func (s *Scene) Update() {
+func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
 }
 
-func (s *Scene) Draw() {
-	s.Background.Draw()
-	s.Spaceship.Draw()
+func (s *Scene) Draw(ct float32) {
+	s.Background.Draw(ct)
+	s.Spaceship.Draw(ct)
 }

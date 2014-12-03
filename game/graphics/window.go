@@ -15,8 +15,9 @@ import (
 
 var (
 	controlChanel chan uint8
+	ticker        *time.Ticker
+	currentTime   float32 = 0.0
 	objectManager *o.ObjectManager
-	ErrGLFWFailed = errors.New("Failed to init glfw")
 )
 
 func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
@@ -30,6 +31,16 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 	}
 	defer glfw.Terminate()
 
+	// Set up ticker to 60 FPS
+	ticker = time.NewTicker(16 * time.Millisecond)
+	defer ticker.Stop()
+
+	go func() {
+		for _ = range ticker.C {
+			currentTime += 0.008
+		}
+	}()
+
 	scene := NewScene(objectManager)
 
 	for !window.ShouldClose() {
@@ -37,14 +48,12 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 
-		scene.Update()
-		scene.Draw()
+		scene.Update(currentTime)
+		scene.Draw(currentTime)
 
 		// Render
 		window.SwapBuffers()
 		glfw.PollEvents()
-
-		time.Sleep(1000 / 60 * time.Millisecond)
 	}
 }
 
@@ -52,7 +61,7 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 func initGL(width, height int, title string) (*glfw.Window, error) {
 	ok := glfw.Init()
 	if !ok {
-		return nil, ErrGLFWFailed
+		return nil, errors.New("Failed to init glfw")
 	}
 	glfw.SwapInterval(1)
 

@@ -56,7 +56,6 @@ func (s *Spaceship) Rotate(dir uint8) {
 		s.Position[2] += 0.1
 		break
 	}
-	rx, ry := s.getRotationVector()
 }
 
 func (s *Spaceship) Accelerate() {

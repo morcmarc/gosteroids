@@ -5,32 +5,6 @@ import (
 	o "github.com/morcmarc/gosteroids/game/objects"
 )
 
-const ss_vertex = `#version 330
-
-in vec2 vrtx;
-uniform vec3 position;
-
-void main()
-{
-	float x = vrtx[0];
-    float y = vrtx[1];
-    float x_pos = position[0];
-    float y_pos = position[1];
-    float angle = position[2];
-    float xx = (x * cos(angle) + y * sin(angle)) + x_pos;
-    float yy = (-x * sin(angle) + y * cos(angle)) + y_pos;
-    gl_Position = vec4(xx, yy, 0.0, 1.0);
-}`
-
-const ss_fragment = `#version 330
-
-out vec4 outColor;
-
-void main()
-{
-    outColor = vec4(1.0, 1.0, 1.0, 1.0);
-}`
-
 type Spaceship struct {
 	SceneObject
 	SSObject *o.Spaceship
@@ -57,17 +31,18 @@ func NewSpaceship(sso *o.Spaceship) *Spaceship {
 	ss.Vao.Bind()
 	defer ss.Vao.Unbind()
 
-	vertex_shader := gl.CreateShader(gl.VERTEX_SHADER)
-	vertex_shader.Source(ss_vertex)
-	vertex_shader.Compile()
-
-	fragment_shader := gl.CreateShader(gl.FRAGMENT_SHADER)
-	fragment_shader.Source(ss_fragment)
-	fragment_shader.Compile()
+	vertexShader, err := LoadShader("assets/shaders/spaceship.vertex.glsl", VertexShader)
+	if err != nil {
+		panic(err)
+	}
+	fragmentShader, err := LoadShader("assets/shaders/spaceship.fragment.glsl", FragmentShader)
+	if err != nil {
+		panic(err)
+	}
 
 	ss.Program = gl.CreateProgram()
-	ss.Program.AttachShader(vertex_shader)
-	ss.Program.AttachShader(fragment_shader)
+	ss.Program.AttachShader(vertexShader)
+	ss.Program.AttachShader(fragmentShader)
 
 	ss.Program.Link()
 	ss.Program.Use()
@@ -83,7 +58,7 @@ func NewSpaceship(sso *o.Spaceship) *Spaceship {
 	return ss
 }
 
-func (s *Spaceship) Draw() {
+func (s *Spaceship) Draw(ct float32) {
 	s.Program.Use()
 	defer s.Program.Unuse()
 
