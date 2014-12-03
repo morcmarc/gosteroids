@@ -16,6 +16,7 @@ import (
 var (
 	controlChanel chan uint8
 	ticker        *time.Ticker
+	hasTicked     bool
 	currentTime   float32 = 0.0
 	objectManager *o.ObjectManager
 )
@@ -35,9 +36,12 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 	ticker = time.NewTicker(16 * time.Millisecond)
 	defer ticker.Stop()
 
+	hasTicked = false
+
 	go func() {
 		for _ = range ticker.C {
 			currentTime += 0.008
+			hasTicked = true
 		}
 	}()
 
@@ -48,7 +52,11 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 
-		scene.Update(currentTime)
+		// Update state?
+		if hasTicked {
+			scene.Update(currentTime)
+			hasTicked = false
+		}
 		scene.Draw(currentTime)
 
 		// Render

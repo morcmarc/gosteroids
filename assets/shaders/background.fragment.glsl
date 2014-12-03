@@ -1,5 +1,8 @@
 #version 330
 
+// NEBULA - CoffeeBreakStudios.com (CBS)
+// Source: https://processing.googlecode.com/svn-history/r10156/trunk/processing/java/examples/Topics/Shaders/Nebula/data/nebula.glsl
+
 #ifdef GL_ES
 precision mediump float;
 #endif
