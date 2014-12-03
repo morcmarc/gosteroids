@@ -7,10 +7,9 @@ import (
 )
 
 const (
-	AccelerationCoeff float64 = 1.05
-	DecelerationCoeff float64 = 0.95
-	SlowdownCoeff     float64 = 0.92
-	MaxVelocity       float64 = 0.01
+	AccelerationCoeff float64 = 0.0010
+	DecelerationCoeff float64 = 0.0010
+	SlowdownCoeff     float64 = 0.9700
 )
 
 type Spaceship struct {
@@ -62,40 +61,19 @@ func (s *Spaceship) Accelerate() {
 	rx, ry := s.getRotationVector()
 	s.Velocity[0] += AccelerationCoeff * rx
 	s.Velocity[1] += AccelerationCoeff * ry
-	// s.clampVelocity()
 }
 
 func (s *Spaceship) Decelerate() {
 	rx, ry := s.getRotationVector()
 	s.Velocity[0] -= DecelerationCoeff * rx
 	s.Velocity[1] -= DecelerationCoeff * ry
-	// s.clampVelocity()
 }
 
 func (s *Spaceship) slowDown() {
 	s.Velocity[0] *= SlowdownCoeff
 	s.Velocity[1] *= SlowdownCoeff
-	s.clampVelocity()
 }
 
 func (s *Spaceship) getRotationVector() (float64, float64) {
 	return math.Sin(s.Position[2]), math.Cos(s.Position[2])
-}
-
-func (s *Spaceship) clampVelocity() {
-	// TODO: fixme
-	if math.Abs(s.Velocity[0]) > MaxVelocity {
-		if math.Signbit(s.Velocity[0]) {
-			s.Velocity[0] = -MaxVelocity
-		} else {
-			s.Velocity[0] = MaxVelocity
-		}
-	}
-	if math.Abs(s.Velocity[1]) > MaxVelocity {
-		if math.Signbit(s.Velocity[1]) {
-			s.Velocity[1] = -MaxVelocity
-		} else {
-			s.Velocity[1] = MaxVelocity
-		}
-	}
 }
