@@ -10,17 +10,28 @@ type Object interface {
 
 type ObjectManager struct {
 	Spaceship *Spaceship
+	Asteroids []*Asteroid
 }
 
 func NewObjectManager() *ObjectManager {
 	om := &ObjectManager{
 		Spaceship: NewSpaceship(),
+		Asteroids: []*Asteroid{},
 	}
+
+	for i := 0; i < 10; i++ {
+		a := NewAsteroid()
+		om.Asteroids = append(om.Asteroids, a)
+	}
+
 	return om
 }
 
 func (o *ObjectManager) Update() {
 	o.Spaceship.Update()
+	for _, a := range o.Asteroids {
+		a.Update()
+	}
 }
 
 func (o *ObjectManager) Listen(controlChanel chan uint8) {
