@@ -42,13 +42,9 @@ func NewBackground() *Background {
 		panic(err)
 	}
 
-	bg.Program = gl.CreateProgram()
-	bg.Program.AttachShader(vertexShader)
-	bg.Program.AttachShader(fragmentShader)
-
-	bg.Program.Link()
+	bg.Program = NewProgram(vertexShader, fragmentShader)
 	bg.Program.Use()
-	// defer bg.Program.Unuse()
+	defer bg.Program.Unuse()
 	bg.Program.BindFragDataLocation(0, "outColor")
 
 	vrtx := bg.Program.GetAttribLocation("vrtx")

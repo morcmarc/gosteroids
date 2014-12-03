@@ -54,14 +54,15 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 
 		// Update state?
 		if hasTicked {
+			glfw.PollEvents()
+			checkKeys(window, controlChanel)
 			scene.Update(currentTime)
 			hasTicked = false
 		}
-		scene.Draw(currentTime)
 
 		// Render
+		scene.Draw(currentTime)
 		window.SwapBuffers()
-		glfw.PollEvents()
 	}
 }
 
@@ -85,7 +86,7 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 		return nil, err
 	}
 
-	window.SetKeyCallback(onKey)
+	// window.SetInputMode(glfw.StickyKeys, 1)
 	window.MakeContextCurrent()
 
 	gl.Init()
@@ -105,26 +106,29 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 	return window, nil
 }
 
-// onKey handles key events.
-func onKey(window *glfw.Window, key glfw.Key, scancode int,
-	action glfw.Action, _ glfw.ModifierKey) {
-	if key == glfw.KeyEscape {
+func checkKeys(window *glfw.Window, cc chan uint8) {
+	if window.GetKey(glfw.KeyEscape) == glfw.Press {
 		window.SetShouldClose(true)
 	}
 
-	if key == glfw.KeyUp {
-		controlChanel <- Throttle
+	u := window.GetKey(glfw.KeyUp)
+	d := window.GetKey(glfw.KeyDown)
+	l := window.GetKey(glfw.KeyLeft)
+	r := window.GetKey(glfw.KeyRight)
+
+	if l == glfw.Press {
+		cc <- Left
 	}
 
-	if key == glfw.KeyDown {
-		controlChanel <- Break
+	if r == glfw.Press {
+		cc <- Right
 	}
 
-	if key == glfw.KeyLeft {
-		controlChanel <- Left
+	if u == glfw.Press {
+		cc <- Throttle
 	}
 
-	if key == glfw.KeyRight {
-		controlChanel <- Right
+	if d == glfw.Press {
+		cc <- Break
 	}
 }

@@ -17,8 +17,12 @@ type Spaceship struct {
 func NewSpaceship(sso *o.Spaceship) *Spaceship {
 	ss := &Spaceship{
 		Vertices: []float32{
-			-0.02, -0.05,
-			0.02, -0.05,
+			0.0, 0.05,
+			0.025, -0.05,
+			0.0, -0.025,
+
+			0.0, -0.025,
+			-0.025, -0.05,
 			0.0, 0.05,
 		},
 		SSObject: sso,
@@ -40,11 +44,7 @@ func NewSpaceship(sso *o.Spaceship) *Spaceship {
 		panic(err)
 	}
 
-	ss.Program = gl.CreateProgram()
-	ss.Program.AttachShader(vertexShader)
-	ss.Program.AttachShader(fragmentShader)
-
-	ss.Program.Link()
+	ss.Program = NewProgram(vertexShader, fragmentShader)
 	ss.Program.Use()
 	defer ss.Program.Unuse()
 	ss.Program.BindFragDataLocation(0, "outColor")

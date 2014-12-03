@@ -9,7 +9,7 @@ import (
 const (
 	AccelerationCoeff float64 = 1.05
 	DecelerationCoeff float64 = 0.95
-	SlowdownRate      float64 = 0.98
+	SlowdownCoeff     float64 = 0.92
 	MaxVelocity       float64 = 0.01
 )
 
@@ -50,10 +50,10 @@ func (s *Spaceship) Update() {
 func (s *Spaceship) Rotate(dir uint8) {
 	switch dir {
 	case Left:
-		s.Position[2] -= 0.1
+		s.Position[2] -= 0.052359 // 3 degrees
 		break
 	case Right:
-		s.Position[2] += 0.1
+		s.Position[2] += 0.052359 // 3 degrees
 		break
 	}
 }
@@ -62,19 +62,19 @@ func (s *Spaceship) Accelerate() {
 	rx, ry := s.getRotationVector()
 	s.Velocity[0] += AccelerationCoeff * rx
 	s.Velocity[1] += AccelerationCoeff * ry
-	s.clampVelocity()
+	// s.clampVelocity()
 }
 
 func (s *Spaceship) Decelerate() {
 	rx, ry := s.getRotationVector()
 	s.Velocity[0] -= DecelerationCoeff * rx
 	s.Velocity[1] -= DecelerationCoeff * ry
-	s.clampVelocity()
+	// s.clampVelocity()
 }
 
 func (s *Spaceship) slowDown() {
-	s.Velocity[0] *= SlowdownRate
-	s.Velocity[1] *= SlowdownRate
+	s.Velocity[0] *= SlowdownCoeff
+	s.Velocity[1] *= SlowdownCoeff
 	s.clampVelocity()
 }
 

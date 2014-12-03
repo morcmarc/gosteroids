@@ -3,5 +3,5 @@ test:
 	@go test -v -cover ./...
 
 install:
-	@echo "--> Installing"
-	@go install
+	@echo "--> Building"
+	@go build
