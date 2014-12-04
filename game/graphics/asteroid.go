@@ -32,11 +32,11 @@ func NewAsteroid(ao *o.Asteroid) *Asteroid {
 	ss.Vao.Bind()
 	defer ss.Vao.Unbind()
 
-	vertexShader, err := LoadShader("assets/shaders/spaceship.vertex.glsl", VertexShader)
+	vertexShader, err := LoadShader("assets/shaders/generic.vertex.glsl", VertexShader)
 	if err != nil {
 		panic(err)
 	}
-	fragmentShader, err := LoadShader("assets/shaders/spaceship.fragment.glsl", FragmentShader)
+	fragmentShader, err := LoadShader("assets/shaders/generic.fragment.glsl", FragmentShader)
 	if err != nil {
 		panic(err)
 	}
@@ -79,10 +79,10 @@ func generateAsteroidVertices(resolution int) []float32 {
 	radius := rand.Float64()/20.0 + 0.05
 	angles := []int{}
 
+	// Generate N points on a circle
 	for i := 0; i < resolution; i++ {
 		angles = append(angles, rand.Intn(360))
 	}
-
 	sort.Ints(angles)
 
 	for i, a := range angles {

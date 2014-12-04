@@ -5,25 +5,21 @@ import (
 	o "github.com/morcmarc/gosteroids/game/objects"
 )
 
-type Spaceship struct {
+type Projectile struct {
 	SceneObject
-	SSObject *o.Spaceship
+	SSObject *o.Projectile
 	Vertices []float32
 	Vao      gl.VertexArray
 	Vbo      gl.Buffer
 	Program  gl.Program
 }
 
-func NewSpaceship(sso *o.Spaceship) *Spaceship {
-	ss := &Spaceship{
+func NewProjectile(sso *o.Projectile) *Projectile {
+	ss := &Projectile{
 		Vertices: []float32{
-			0.0, 0.05,
-			0.025, -0.05,
-			0.0, -0.025,
-
-			0.0, -0.025,
-			-0.025, -0.05,
-			0.0, 0.05,
+			-0.006, 0.00,
+			0.000, 0.06,
+			0.006, 0.00,
 		},
 		SSObject: sso,
 	}
@@ -58,7 +54,7 @@ func NewSpaceship(sso *o.Spaceship) *Spaceship {
 	return ss
 }
 
-func (s *Spaceship) Draw(ct float32) {
+func (s *Projectile) Draw(ct float32) {
 	s.Program.Use()
 	defer s.Program.Unuse()
 

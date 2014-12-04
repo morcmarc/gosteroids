@@ -16,9 +16,12 @@ import (
 var (
 	controlChanel chan uint8
 	ticker        *time.Ticker
+	bulletTime    *time.Ticker
+	canFire       bool
 	hasTicked     bool
 	currentTime   float32 = 0.0
 	objectManager *o.ObjectManager
+	vbo           gl.Buffer
 )
 
 func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
@@ -36,7 +39,11 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 	ticker = time.NewTicker(16 * time.Millisecond)
 	defer ticker.Stop()
 
+	bulletTime = time.NewTicker(100 * time.Millisecond)
+	defer bulletTime.Stop()
+
 	hasTicked = false
+	canFire = false
 
 	go func() {
 		for _ = range ticker.C {
@@ -45,9 +52,19 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 		}
 	}()
 
+	go func() {
+		for _ = range bulletTime.C {
+			canFire = true
+		}
+	}()
+
 	scene := NewScene(objectManager)
 
 	for !window.ShouldClose() {
+		if window.GetKey(glfw.KeyEscape) == glfw.Press {
+			window.SetShouldClose(true)
+		}
+
 		// Reset
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
@@ -55,9 +72,15 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 		// Update state?
 		if hasTicked {
 			glfw.PollEvents()
-			checkKeys(window, controlChanel)
+			checkMovementKeys(window, controlChanel)
 			scene.Update(currentTime)
 			hasTicked = false
+		}
+
+		// Can fire?
+		if canFire {
+			checkActionKeys(window, scene)
+			canFire = false
 		}
 
 		// Render
@@ -106,11 +129,7 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 	return window, nil
 }
 
-func checkKeys(window *glfw.Window, cc chan uint8) {
-	if window.GetKey(glfw.KeyEscape) == glfw.Press {
-		window.SetShouldClose(true)
-	}
-
+func checkMovementKeys(window *glfw.Window, cc chan uint8) {
 	u := window.GetKey(glfw.KeyUp)
 	d := window.GetKey(glfw.KeyDown)
 	l := window.GetKey(glfw.KeyLeft)
@@ -130,5 +149,16 @@ func checkKeys(window *glfw.Window, cc chan uint8) {
 
 	if d == glfw.Press {
 		cc <- Break
+	}
+}
+
+func checkActionKeys(window *glfw.Window, scene *Scene) {
+	// The reason we call Fire() directly and not by sending a message down
+	// the channel is because the listener would be a go subroutine that doesn't
+	// have access to the OpenGL context and will throw an error. See the
+	// runtime.LockOSThread() call in main.go.
+	f := window.GetKey(glfw.KeySpace)
+	if f == glfw.Press {
+		scene.Fire()
 	}
 }

@@ -9,6 +9,7 @@ type Scene struct {
 	Background    *Background
 	Spaceship     *Spaceship
 	Asteroids     []*Asteroid
+	Projectiles   []*Projectile
 }
 
 type SceneObject interface {
@@ -21,6 +22,7 @@ func NewScene(om *o.ObjectManager) *Scene {
 		Spaceship:     NewSpaceship(om.Spaceship),
 		Background:    NewBackground(),
 		Asteroids:     []*Asteroid{},
+		Projectiles:   []*Projectile{},
 	}
 
 	for _, ao := range om.Asteroids {
@@ -31,15 +33,32 @@ func NewScene(om *o.ObjectManager) *Scene {
 	return s
 }
 
+func (s *Scene) Fire() {
+	po := s.ObjectManager.FireProjectile()
+	p := NewProjectile(po)
+	// TODO: remove indirect reference
+	s.ObjectManager.Projectiles = append(s.ObjectManager.Projectiles, po)
+	s.Projectiles = append(s.Projectiles, p)
+}
+
 func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
+	// TODO: fix memory leak
+	// TODO: remove indirect reference
+	for i, p := range s.Projectiles {
+		if p.SSObject.IsOffScreen() {
+			s.Projectiles = append(s.Projectiles[:i], s.Projectiles[i+1:]...)
+		}
+	}
 }
 
 func (s *Scene) Draw(ct float32) {
 	s.Background.Draw(ct)
 	s.Spaceship.Draw(ct)
-
 	for _, a := range s.Asteroids {
 		a.Draw(ct)
+	}
+	for _, p := range s.Projectiles {
+		p.Draw(ct)
 	}
 }

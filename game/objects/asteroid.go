@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"math/rand"
+	. "github.com/morcmarc/gosteroids/game/shared"
 )
 
 type Asteroid struct {
@@ -11,15 +11,17 @@ type Asteroid struct {
 }
 
 func NewAsteroid() *Asteroid {
-	x := rand.Float64()*(1-(-1)) + (-1)
-	y := rand.Float64()*(1-(-1)) + (-1)
-	vx := rand.Float64()*(1-(-1)) + (-1)
-	vy := rand.Float64()*(1-(-1)) + (-1)
-	vr := rand.Float64()*(1-(-1)) + (-1)
+	x := RandFloat64nInRange(-1.0, 1.0)
+	y := RandFloat64nInRange(-1.0, 1.0)
+	vx := RandFloat64nInRange(-1.0, 1.0)
+	vy := RandFloat64nInRange(-1.0, 1.0)
+	vr := RandFloat64nInRange(-1.0, 1.0)
+
 	a := &Asteroid{
 		Position: [3]float64{x, y, 0.0},
 		Velocity: [3]float64{vx / 500, vy / 500, vr / 100},
 	}
+
 	return a
 }
 
