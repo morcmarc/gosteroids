@@ -3,6 +3,10 @@ Gosteroids
 
 Asteroids clone built in Go, a tribute to [rusteroids](https://github.com/benbrunton/rusteroids)
 
+## Current state
+
+![Gosteroids](https://raw.github.com/morcmarc/gosteroids/master/gosteroids.gif)
+
 ## Installing
 
 Run-time dependencies:

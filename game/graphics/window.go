@@ -39,6 +39,7 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 	ticker = time.NewTicker(16 * time.Millisecond)
 	defer ticker.Stop()
 
+	// Set firing interval
 	bulletTime = time.NewTicker(100 * time.Millisecond)
 	defer bulletTime.Stop()
 
