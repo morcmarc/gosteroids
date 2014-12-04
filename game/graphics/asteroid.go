@@ -1,7 +1,10 @@
 package graphics
 
 import (
+	"math"
 	"math/rand"
+	"sort"
+	"time"
 
 	"github.com/go-gl/gl"
 	o "github.com/morcmarc/gosteroids/game/objects"
@@ -17,28 +20,9 @@ type Asteroid struct {
 }
 
 func NewAsteroid(ao *o.Asteroid) *Asteroid {
-	max := float32(rand.Intn(200)) / 2000.0
-	min := max / 2.0
-
 	ss := &Asteroid{
-		Vertices: []float32{
-			-min, max,
-			min, max,
-			max, 0.0,
-
-			max, 0.00,
-			min, -max,
-			-min, -max,
-
-			-min, -max,
-			-max, 0.00,
-			-min, max,
-
-			-min, max,
-			max, 0.00,
-			-min, -max,
-		},
-		AObject: ao,
+		Vertices: generateAsteroidVertices(25),
+		AObject:  ao,
 	}
 
 	ss.Vbo = gl.GenBuffer()
@@ -85,4 +69,45 @@ func (s *Asteroid) Draw(ct float32) {
 		float32(s.AObject.Position[2]))
 
 	gl.DrawArrays(gl.TRIANGLES, 0, len(s.Vertices))
+}
+
+func generateAsteroidVertices(resolution int) []float32 {
+	vertices := []float32{}
+
+	rand.Seed(time.Now().UnixNano())
+
+	radius := rand.Float64()/20.0 + 0.05
+	angles := []int{}
+
+	for i := 0; i < resolution; i++ {
+		angles = append(angles, rand.Intn(360))
+	}
+
+	sort.Ints(angles)
+
+	for i, a := range angles {
+		var prev int
+		if i == 0 {
+			prev = angles[len(angles)-1]
+		} else {
+			prev = angles[i-1]
+		}
+
+		prevRadian := (float64(prev) * math.Pi) / 180.0
+		prevX := 0.0 + radius*math.Cos(prevRadian)
+		prevY := 0.0 + radius*math.Sin(prevRadian)
+
+		radian := (float64(a) * math.Pi) / 180.0
+		x := 0.0 + radius*math.Cos(radian)
+		y := 0.0 + radius*math.Sin(radian)
+
+		vertices = append(vertices, float32(0.0))
+		vertices = append(vertices, float32(0.0))
+		vertices = append(vertices, float32(prevX))
+		vertices = append(vertices, float32(prevY))
+		vertices = append(vertices, float32(x))
+		vertices = append(vertices, float32(y))
+	}
+
+	return vertices
 }
