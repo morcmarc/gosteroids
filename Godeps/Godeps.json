@@ -21,6 +21,14 @@
 		{
 			"ImportPath": "github.com/go-gl/glu",
 			"Rev": "259c0c56e294d50d00859fae707e76b6231241e0"
+		},
+		{
+			"ImportPath": "github.com/veandco/go-sdl2/sdl",
+			"Rev": "f2c64b9250b27bec2fcfc137f898068995d501ff"
+		},
+		{
+			"ImportPath": "github.com/veandco/go-sdl2/sdl_mixer",
+			"Rev": "f2c64b9250b27bec2fcfc137f898068995d501ff"
 		}
 	]
 }
