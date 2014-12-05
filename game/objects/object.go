@@ -36,11 +36,17 @@ func (o *ObjectManager) Update() {
 		a.Update()
 	}
 
-	// TODO: fix memory leak
 	for i, p := range o.Projectiles {
-		p.Update()
+		if p == nil {
+			continue
+		}
 		if p.IsOffScreen() {
-			o.Projectiles = append(o.Projectiles[:i], o.Projectiles[i+1:]...)
+			copy(o.Projectiles[i:], o.Projectiles[i+1:])
+			o.Projectiles[len(o.Projectiles)-1] = nil
+			o.Projectiles = o.Projectiles[:len(o.Projectiles)-1]
+		}
+		if p != nil {
+			p.Update()
 		}
 	}
 }

@@ -43,11 +43,15 @@ func (s *Scene) Fire() {
 
 func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
-	// TODO: fix memory leak
 	// TODO: remove indirect reference
 	for i, p := range s.Projectiles {
+		if p == nil {
+			continue
+		}
 		if p.SSObject.IsOffScreen() {
-			s.Projectiles = append(s.Projectiles[:i], s.Projectiles[i+1:]...)
+			copy(s.Projectiles[i:], s.Projectiles[i+1:])
+			s.Projectiles[len(s.Projectiles)-1] = nil
+			s.Projectiles = s.Projectiles[:len(s.Projectiles)-1]
 		}
 	}
 }
