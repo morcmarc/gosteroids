@@ -8,5 +8,9 @@ const (
 	Right    uint8 = 3
 
 	// Action
-	Fire uint8 = 4
+	Fire uint8 = 100
+
+	// Misc
+	VolumeDown uint8 = 200
+	VolumeUp   uint8 = 201
 )

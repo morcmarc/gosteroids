@@ -135,6 +135,8 @@ func checkMovementKeys(window *glfw.Window, cc chan uint8) {
 	d := window.GetKey(glfw.KeyDown)
 	l := window.GetKey(glfw.KeyLeft)
 	r := window.GetKey(glfw.KeyRight)
+	m := window.GetKey(glfw.KeyMinus)
+	p := window.GetKey(glfw.KeyEqual)
 
 	if l == glfw.Press {
 		cc <- Left
@@ -150,6 +152,14 @@ func checkMovementKeys(window *glfw.Window, cc chan uint8) {
 
 	if d == glfw.Press {
 		cc <- Break
+	}
+
+	if m == glfw.Press {
+		cc <- VolumeDown
+	}
+
+	if p == glfw.Press {
+		cc <- VolumeUp
 	}
 }
 

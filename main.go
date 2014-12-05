@@ -11,5 +11,7 @@ func init() {
 }
 
 func main() {
+	cpus := runtime.NumCPU()
+	runtime.GOMAXPROCS(cpus)
 	game.Start()
 }
