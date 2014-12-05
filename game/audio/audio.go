@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	b "github.com/morcmarc/gosteroids/game/broadcast"
 	. "github.com/morcmarc/gosteroids/game/shared"
 	"github.com/veandco/go-sdl2/sdl"
 	"github.com/veandco/go-sdl2/sdl_mixer"
@@ -11,17 +12,19 @@ import (
 
 type AudioPlayer struct {
 	Volume int
+	Muted  bool
 }
 
 func NewAudioPlayer() *AudioPlayer {
 	ap := &AudioPlayer{
 		Volume: 75,
+		Muted:  false,
 	}
 	return ap
 }
 
-func (a *AudioPlayer) Listen(cc chan uint8) {
-	for m := range cc {
+func (a *AudioPlayer) Listen(cc b.Receiver) {
+	for m := cc.Read(); m != nil; m = cc.Read() {
 		if m == VolumeDown && a.Volume > -1 {
 			a.Volume -= 1
 			mix.SetMusicVolume(a.Volume)
@@ -29,6 +32,14 @@ func (a *AudioPlayer) Listen(cc chan uint8) {
 		if m == VolumeUp && a.Volume < 101 {
 			a.Volume += 1
 			mix.SetMusicVolume(a.Volume)
+		}
+		if m == Mute {
+			a.Muted = !a.Muted
+			if a.Muted {
+				mix.SetMusicVolume(0)
+			} else {
+				mix.SetMusicVolume(a.Volume)
+			}
 		}
 	}
 }

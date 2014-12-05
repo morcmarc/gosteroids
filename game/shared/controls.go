@@ -13,4 +13,5 @@ const (
 	// Misc
 	VolumeDown uint8 = 200
 	VolumeUp   uint8 = 201
+	Mute       uint8 = 202
 )

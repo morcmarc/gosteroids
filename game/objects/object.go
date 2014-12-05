@@ -1,6 +1,7 @@
 package objects
 
 import (
+	b "github.com/morcmarc/gosteroids/game/broadcast"
 	. "github.com/morcmarc/gosteroids/game/shared"
 )
 
@@ -44,8 +45,8 @@ func (o *ObjectManager) Update() {
 	}
 }
 
-func (o *ObjectManager) Listen(controlChanel chan uint8) {
-	for m := range controlChanel {
+func (o *ObjectManager) Listen(cc b.Receiver) {
+	for m := cc.Read(); m != nil; m = cc.Read() {
 		if m == Throttle {
 			o.Spaceship.Accelerate()
 		}

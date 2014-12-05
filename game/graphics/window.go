@@ -9,23 +9,25 @@ import (
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
 	"github.com/go-gl/glh"
+	b "github.com/morcmarc/gosteroids/game/broadcast"
 	o "github.com/morcmarc/gosteroids/game/objects"
 	. "github.com/morcmarc/gosteroids/game/shared"
 )
 
 var (
-	controlChanel chan uint8
-	ticker        *time.Ticker
-	bulletTime    *time.Ticker
-	canFire       bool
-	hasTicked     bool
-	currentTime   float32 = 0.0
-	objectManager *o.ObjectManager
-	vbo           gl.Buffer
+	controlChannel b.Broadcaster
+	ticker         *time.Ticker
+	bulletTime     *time.Ticker
+	canFire        bool
+	hasTicked      bool
+	currentTime    float32 = 0.0
+	objectManager  *o.ObjectManager
+	vbo            gl.Buffer
+	pressingMute   bool = false
 )
 
-func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
-	controlChanel = cc
+func Init(width, height int, title string, cc b.Broadcaster, om *o.ObjectManager) {
+	controlChannel = cc
 	objectManager = om
 
 	window, err := initGL(width, height, title)
@@ -73,7 +75,7 @@ func Init(width, height int, title string, cc chan uint8, om *o.ObjectManager) {
 		// Update state?
 		if hasTicked {
 			glfw.PollEvents()
-			checkMovementKeys(window, controlChanel)
+			checkMovementKeys(window, controlChannel)
 			scene.Update(currentTime)
 			hasTicked = false
 		}
@@ -130,36 +132,46 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 	return window, nil
 }
 
-func checkMovementKeys(window *glfw.Window, cc chan uint8) {
+func checkMovementKeys(window *glfw.Window, cc b.Broadcaster) {
 	u := window.GetKey(glfw.KeyUp)
 	d := window.GetKey(glfw.KeyDown)
 	l := window.GetKey(glfw.KeyLeft)
 	r := window.GetKey(glfw.KeyRight)
-	m := window.GetKey(glfw.KeyMinus)
+	n := window.GetKey(glfw.KeyMinus)
 	p := window.GetKey(glfw.KeyEqual)
+	m := window.GetKey(glfw.KeyM)
 
 	if l == glfw.Press {
-		cc <- Left
+		cc.Write(Left)
 	}
 
 	if r == glfw.Press {
-		cc <- Right
+		cc.Write(Right)
 	}
 
 	if u == glfw.Press {
-		cc <- Throttle
+		cc.Write(Throttle)
 	}
 
 	if d == glfw.Press {
-		cc <- Break
+		cc.Write(Break)
 	}
 
-	if m == glfw.Press {
-		cc <- VolumeDown
+	if n == glfw.Press {
+		cc.Write(VolumeDown)
 	}
 
 	if p == glfw.Press {
-		cc <- VolumeUp
+		cc.Write(VolumeUp)
+	}
+
+	if m == glfw.Press {
+		pressingMute = true
+	}
+
+	if m == glfw.Release && pressingMute {
+		cc.Write(Mute)
+		pressingMute = false
 	}
 }
 
