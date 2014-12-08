@@ -21,7 +21,7 @@ type Asteroid struct {
 
 func NewAsteroid(ao *o.Asteroid) *Asteroid {
 	a := &Asteroid{
-		Vertices: generateAsteroidVertices(25),
+		Vertices: generateAsteroidVertices(ao.Radius, 25),
 		AObject:  ao,
 	}
 
@@ -79,12 +79,11 @@ func (a *Asteroid) Delete() {
 	a.Program.Delete()
 }
 
-func generateAsteroidVertices(resolution int) []float32 {
+func generateAsteroidVertices(radius float64, resolution int) []float32 {
 	vertices := []float32{}
 
 	rand.Seed(time.Now().UnixNano())
 
-	radius := rand.Float64()/20.0 + 0.05
 	angles := []int{}
 
 	// Generate N points on a circle

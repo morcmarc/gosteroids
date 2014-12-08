@@ -15,7 +15,7 @@ func NewScore(width, height int) *Score {
 		Points: 0,
 	}
 
-	s.Font = NewFont("assets/fonts/alphabet_30.png", 16, 6, width, height)
+	s.Font = NewFont("assets/fonts/alphabet_20.png", 16, 6, width, height)
 
 	return s
 }

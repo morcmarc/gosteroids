@@ -58,6 +58,10 @@ func (s *Scene) Update(ct float32) {
 			s.Projectiles = s.Projectiles[:len(s.Projectiles)-1]
 		}
 	}
+	if s.ObjectManager.CheckCollision() {
+		s.ObjectManager.Reset()
+		s.Score.Points = 0
+	}
 }
 
 func (s *Scene) Draw(ct float32) {

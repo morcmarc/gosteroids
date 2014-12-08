@@ -6,23 +6,28 @@ import (
 
 type Asteroid struct {
 	Object
+	Radius   float64
 	Position [3]float64
 	Velocity [3]float64
 }
 
 func NewAsteroid() *Asteroid {
+	a := &Asteroid{}
+	a.Reset()
+	return a
+}
+
+func (a *Asteroid) Reset() {
+	r := RandFloat64nInRange(0.0, 1.0)/20.0 + 0.05
 	x := RandFloat64nInRange(-1.0, 1.0)
 	y := RandFloat64nInRange(-1.0, 1.0)
 	vx := RandFloat64nInRange(-1.0, 1.0)
 	vy := RandFloat64nInRange(-1.0, 1.0)
 	vr := RandFloat64nInRange(-1.0, 1.0)
 
-	a := &Asteroid{
-		Position: [3]float64{x, y, 0.0},
-		Velocity: [3]float64{vx / 500, vy / 500, vr / 100},
-	}
-
-	return a
+	a.Radius = r
+	a.Position = [3]float64{x, y, 0.0}
+	a.Velocity = [3]float64{vx / 500, vy / 500, vr / 100}
 }
 
 func (a *Asteroid) Update() {

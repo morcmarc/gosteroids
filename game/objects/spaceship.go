@@ -16,13 +16,12 @@ type Spaceship struct {
 	Object
 	Position [3]float64
 	Velocity [2]float64
+	Radius   float64
 }
 
 func NewSpaceship() *Spaceship {
-	ss := &Spaceship{
-		Position: [3]float64{0.0, 0.0, 0.0},
-		Velocity: [2]float64{0.0, 0.0},
-	}
+	ss := &Spaceship{Radius: 0.05}
+	ss.Reset()
 	return ss
 }
 
@@ -44,6 +43,11 @@ func (s *Spaceship) Update() {
 	if s.Position[1] < -1.0 {
 		s.Position[1] = 1.0
 	}
+}
+
+func (s *Spaceship) Reset() {
+	s.Position = [3]float64{0.0, 0.0, 0.0}
+	s.Velocity = [2]float64{0.0, 0.0}
 }
 
 func (s *Spaceship) Rotate(dir uint8) {
