@@ -20,7 +20,6 @@ type Font struct {
 	GlyphW        float32
 	GlyphH        float32
 	vbo           gl.Buffer
-	tbo           gl.Buffer
 	vao           gl.VertexArray
 	program       gl.Program
 	color         []float32
@@ -68,7 +67,6 @@ func NewFont(filename string, cols, rows, width, height int) *Font {
 
 	f.vbo = gl.GenBuffer()
 	f.vbo.Bind(gl.ARRAY_BUFFER)
-
 	f.vbo.Unbind(gl.ARRAY_BUFFER)
 
 	textureUniform := f.program.GetUniformLocation("tex")
@@ -156,4 +154,11 @@ func (f *Font) Printf(s string, x, y float32) {
 
 	f.program.Unuse()
 	gl.Disable(gl.BLEND)
+}
+
+func (f *Font) Delete() {
+	f.vao.Delete()
+	f.vbo.Delete()
+	f.Texture.Delete()
+	f.program.Delete()
 }

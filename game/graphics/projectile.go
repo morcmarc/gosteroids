@@ -7,21 +7,21 @@ import (
 
 type Projectile struct {
 	SceneObject
-	SSObject *o.Projectile
+	PSObject *o.Projectile
 	Vertices []float32
 	Vao      gl.VertexArray
 	Vbo      gl.Buffer
 	Program  gl.Program
 }
 
-func NewProjectile(sso *o.Projectile) *Projectile {
+func NewProjectile(pso *o.Projectile) *Projectile {
 	ss := &Projectile{
 		Vertices: []float32{
 			-0.006, 0.00,
 			0.000, 0.06,
 			0.006, 0.00,
 		},
-		SSObject: sso,
+		PSObject: pso,
 	}
 
 	ss.Vbo = gl.GenBuffer()
@@ -54,18 +54,24 @@ func NewProjectile(sso *o.Projectile) *Projectile {
 	return ss
 }
 
-func (s *Projectile) Draw(ct float32) {
-	s.Program.Use()
-	defer s.Program.Unuse()
+func (p *Projectile) Draw(ct float32) {
+	p.Program.Use()
+	defer p.Program.Unuse()
 
-	s.Vao.Bind()
-	defer s.Vao.Unbind()
+	p.Vao.Bind()
+	defer p.Vao.Unbind()
 
-	p := s.Program.GetUniformLocation("position")
-	p.Uniform3f(
-		float32(s.SSObject.Position[0]),
-		float32(s.SSObject.Position[1]),
-		float32(s.SSObject.Position[2]))
+	pos := p.Program.GetUniformLocation("position")
+	pos.Uniform3f(
+		float32(p.PSObject.Position[0]),
+		float32(p.PSObject.Position[1]),
+		float32(p.PSObject.Position[2]))
 
-	gl.DrawArrays(gl.TRIANGLES, 0, len(s.Vertices))
+	gl.DrawArrays(gl.TRIANGLES, 0, len(p.Vertices))
+}
+
+func (p *Projectile) Delete() {
+	p.Vao.Delete()
+	p.Vbo.Delete()
+	p.Program.Delete()
 }

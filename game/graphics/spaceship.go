@@ -73,3 +73,9 @@ func (s *Spaceship) Draw(ct float32) {
 
 	gl.DrawArrays(gl.TRIANGLES, 0, len(s.Vertices))
 }
+
+func (s *Spaceship) Delete() {
+	s.Vao.Delete()
+	s.Vbo.Delete()
+	s.Program.Delete()
+}

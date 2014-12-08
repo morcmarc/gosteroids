@@ -24,3 +24,7 @@ func (s *Score) Draw(ct float32) {
 	ps := fmt.Sprintf("%06d", s.Points)
 	s.Font.Printf(ps, -0.9, -0.8)
 }
+
+func (s *Score) Delete() {
+
+}

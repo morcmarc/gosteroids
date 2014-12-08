@@ -20,17 +20,10 @@ type Asteroid struct {
 }
 
 func NewAsteroid(ao *o.Asteroid) *Asteroid {
-	ss := &Asteroid{
+	a := &Asteroid{
 		Vertices: generateAsteroidVertices(25),
 		AObject:  ao,
 	}
-
-	ss.Vbo = gl.GenBuffer()
-	ss.Vbo.Bind(gl.ARRAY_BUFFER)
-
-	ss.Vao = gl.GenVertexArray()
-	ss.Vao.Bind()
-	defer ss.Vao.Unbind()
 
 	vertexShader, err := LoadShader("assets/shaders/generic.vertex.glsl", VertexShader)
 	if err != nil {
@@ -41,34 +34,49 @@ func NewAsteroid(ao *o.Asteroid) *Asteroid {
 		panic(err)
 	}
 
-	ss.Program = NewProgram(vertexShader, fragmentShader)
-	ss.Program.Use()
-	defer ss.Program.Unuse()
-	ss.Program.BindFragDataLocation(0, "outColor")
+	a.Program = NewProgram(vertexShader, fragmentShader)
+	a.Program.Use()
+	defer a.Program.Unuse()
+	a.Program.BindFragDataLocation(0, "outColor")
 
-	vrtx := ss.Program.GetAttribLocation("vrtx")
+	a.Vao = gl.GenVertexArray()
+	a.Vao.Bind()
+
+	a.Vbo = gl.GenBuffer()
+	a.Vbo.Bind(gl.ARRAY_BUFFER)
+
+	vrtx := a.Program.GetAttribLocation("vrtx")
 	vrtx.AttribPointer(2, gl.FLOAT, false, 0, nil)
 	vrtx.EnableArray()
 
-	gl.BufferData(gl.ARRAY_BUFFER, len(ss.Vertices)*4, ss.Vertices, gl.DYNAMIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(a.Vertices)*4, a.Vertices, gl.DYNAMIC_DRAW)
 
-	return ss
+	a.Vbo.Unbind(gl.ARRAY_BUFFER)
+	a.Vao.Unbind()
+
+	return a
 }
 
-func (s *Asteroid) Draw(ct float32) {
-	s.Program.Use()
-	defer s.Program.Unuse()
+func (a *Asteroid) Draw(ct float32) {
+	a.Program.Use()
+	defer a.Program.Unuse()
 
-	s.Vao.Bind()
-	defer s.Vao.Unbind()
+	a.Vao.Bind()
+	defer a.Vao.Unbind()
 
-	p := s.Program.GetUniformLocation("position")
+	p := a.Program.GetUniformLocation("position")
 	p.Uniform3f(
-		float32(s.AObject.Position[0]),
-		float32(s.AObject.Position[1]),
-		float32(s.AObject.Position[2]))
+		float32(a.AObject.Position[0]),
+		float32(a.AObject.Position[1]),
+		float32(a.AObject.Position[2]))
 
-	gl.DrawArrays(gl.TRIANGLES, 0, len(s.Vertices))
+	gl.DrawArrays(gl.TRIANGLES, 0, len(a.Vertices))
+}
+
+func (a *Asteroid) Delete() {
+	a.Vao.Delete()
+	a.Vbo.Delete()
+	a.Program.Delete()
 }
 
 func generateAsteroidVertices(resolution int) []float32 {

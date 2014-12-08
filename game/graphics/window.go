@@ -22,7 +22,6 @@ var (
 	hasTicked      bool
 	currentTime    float32 = 0.0
 	objectManager  *o.ObjectManager
-	vbo            gl.Buffer
 	pressingMute   bool = false
 )
 
@@ -90,6 +89,8 @@ func Init(width, height int, title string, cc b.Broadcaster, om *o.ObjectManager
 		scene.Draw(currentTime)
 		window.SwapBuffers()
 	}
+
+	scene.Delete()
 }
 
 // initGL initializes GLFW and OpenGL.

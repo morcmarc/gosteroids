@@ -26,13 +26,6 @@ func NewBackground() *Background {
 		},
 	}
 
-	bg.Vbo = gl.GenBuffer()
-	bg.Vbo.Bind(gl.ARRAY_BUFFER)
-
-	bg.Vao = gl.GenVertexArray()
-	bg.Vao.Bind()
-	defer bg.Vao.Unbind()
-
 	vertexShader, err := LoadShader("assets/shaders/background.vertex.glsl", VertexShader)
 	if err != nil {
 		panic(err)
@@ -46,6 +39,13 @@ func NewBackground() *Background {
 	bg.Program.Use()
 	defer bg.Program.Unuse()
 	bg.Program.BindFragDataLocation(0, "outColor")
+
+	bg.Vbo = gl.GenBuffer()
+	bg.Vbo.Bind(gl.ARRAY_BUFFER)
+
+	bg.Vao = gl.GenVertexArray()
+	bg.Vao.Bind()
+	defer bg.Vao.Unbind()
 
 	vrtx := bg.Program.GetAttribLocation("vrtx")
 	vrtx.AttribPointer(2, gl.FLOAT, false, 0, nil)
@@ -70,4 +70,10 @@ func (b *Background) Draw(ct float32) {
 	r.Uniform2f(600.0, 600.0)
 
 	gl.DrawArrays(gl.TRIANGLES, 0, len(b.Vertices))
+}
+
+func (b *Background) Delete() {
+	b.Vao.Delete()
+	b.Vao.Delete()
+	b.Program.Delete()
 }

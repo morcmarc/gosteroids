@@ -15,6 +15,7 @@ type Scene struct {
 
 type SceneObject interface {
 	Draw(ct float32)
+	Delete()
 }
 
 func NewScene(om *o.ObjectManager) *Scene {
@@ -51,7 +52,7 @@ func (s *Scene) Update(ct float32) {
 		if p == nil {
 			continue
 		}
-		if p.SSObject.IsOffScreen() {
+		if p.PSObject.IsOffScreen() {
 			copy(s.Projectiles[i:], s.Projectiles[i+1:])
 			s.Projectiles[len(s.Projectiles)-1] = nil
 			s.Projectiles = s.Projectiles[:len(s.Projectiles)-1]
@@ -69,4 +70,16 @@ func (s *Scene) Draw(ct float32) {
 		p.Draw(ct)
 	}
 	s.Score.Draw(ct)
+}
+
+func (s *Scene) Delete() {
+	s.Background.Delete()
+	s.Spaceship.Delete()
+	for _, a := range s.Asteroids {
+		a.Delete()
+	}
+	for _, p := range s.Projectiles {
+		p.Delete()
+	}
+	s.Score.Delete()
 }
