@@ -101,12 +101,13 @@ func generateAsteroidVertices(resolution int) []float32 {
 		x := 0.0 + radius*math.Cos(radian)
 		y := 0.0 + radius*math.Sin(radian)
 
-		vertices = append(vertices, float32(0.0))
-		vertices = append(vertices, float32(0.0))
-		vertices = append(vertices, float32(prevX))
-		vertices = append(vertices, float32(prevY))
-		vertices = append(vertices, float32(x))
-		vertices = append(vertices, float32(y))
+		vertices = append(vertices,
+			float32(0.0),
+			float32(0.0),
+			float32(prevX),
+			float32(prevY),
+			float32(x),
+			float32(y))
 	}
 
 	return vertices

@@ -10,6 +10,7 @@ type Scene struct {
 	Spaceship     *Spaceship
 	Asteroids     []*Asteroid
 	Projectiles   []*Projectile
+	Score         *Score
 }
 
 type SceneObject interface {
@@ -21,6 +22,7 @@ func NewScene(om *o.ObjectManager) *Scene {
 		ObjectManager: om,
 		Spaceship:     NewSpaceship(om.Spaceship),
 		Background:    NewBackground(),
+		Score:         NewScore(),
 		Asteroids:     []*Asteroid{},
 		Projectiles:   []*Projectile{},
 	}
@@ -43,6 +45,7 @@ func (s *Scene) Fire() {
 
 func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
+	s.Score.Points += 1
 	// TODO: remove indirect reference
 	for i, p := range s.Projectiles {
 		if p == nil {
@@ -65,4 +68,5 @@ func (s *Scene) Draw(ct float32) {
 	for _, p := range s.Projectiles {
 		p.Draw(ct)
 	}
+	s.Score.Draw(ct)
 }

@@ -29,7 +29,7 @@ func CreateTexture(r io.Reader) (gl.Texture, error) {
 		return gl.Texture(0), err
 	}
 
-	rgbaImg, ok := img.(*image.RGBA)
+	rgbaImg, ok := img.(*image.NRGBA)
 	if !ok {
 		return gl.Texture(0), errors.New("texture must be an RGBA image")
 	}
