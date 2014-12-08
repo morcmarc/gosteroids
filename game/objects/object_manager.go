@@ -89,3 +89,18 @@ func (o *ObjectManager) CheckCollision() bool {
 	}
 	return false
 }
+
+func (o *ObjectManager) CheckHits() (int, int) {
+	for i, p := range o.Projectiles {
+		for j, a := range o.Asteroids {
+			var dx float64 = (p.Position[0] + 0.003) - (a.Position[0] + a.Radius)
+			var dy float64 = (p.Position[1] + 0.003) - (a.Position[1] + a.Radius)
+			var distance float64 = math.Sqrt(dx*dx + dy*dy)
+
+			if distance < 0.003+a.Radius {
+				return i, j
+			}
+		}
+	}
+	return -1, -1
+}

@@ -1,6 +1,8 @@
 package graphics
 
 import (
+	"fmt"
+
 	o "github.com/morcmarc/gosteroids/game/objects"
 )
 
@@ -46,6 +48,17 @@ func (s *Scene) Fire() {
 
 func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
+
+	hitP, hitA := s.ObjectManager.CheckHits()
+	if hitP > -1 && hitA > -1 {
+		fmt.Printf("Hit, P:%d => A:%d\n", hitP, hitA)
+	}
+
+	if s.ObjectManager.CheckCollision() {
+		s.ObjectManager.Reset()
+		s.Score.Points = 0
+	}
+
 	s.Score.Points += 1
 	// TODO: remove indirect reference
 	for i, p := range s.Projectiles {
@@ -57,10 +70,6 @@ func (s *Scene) Update(ct float32) {
 			s.Projectiles[len(s.Projectiles)-1] = nil
 			s.Projectiles = s.Projectiles[:len(s.Projectiles)-1]
 		}
-	}
-	if s.ObjectManager.CheckCollision() {
-		s.ObjectManager.Reset()
-		s.Score.Points = 0
 	}
 }
 
