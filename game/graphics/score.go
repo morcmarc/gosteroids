@@ -10,12 +10,12 @@ type Score struct {
 	Font   *Font
 }
 
-func NewScore() *Score {
+func NewScore(width, height int) *Score {
 	s := &Score{
 		Points: 0,
 	}
 
-	s.Font = NewFont("assets/fonts/alphabet_30.png", 16, 6, 600, 600)
+	s.Font = NewFont("assets/fonts/alphabet_30.png", 16, 6, width, height)
 
 	return s
 }

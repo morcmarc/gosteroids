@@ -12,7 +12,7 @@ type Background struct {
 	Program  gl.Program
 }
 
-func NewBackground() *Background {
+func NewBackground(animated bool) *Background {
 	bg := &Background{
 		Vertices: []float32{
 			// Left bottom triangle
@@ -30,7 +30,13 @@ func NewBackground() *Background {
 	if err != nil {
 		panic(err)
 	}
-	fragmentShader, err := LoadShader("assets/shaders/background.fragment.glsl", FragmentShader)
+
+	fsf := "assets/shaders/background.fragment.glsl"
+	// Load static color background if requested
+	if !animated {
+		fsf = "assets/shaders/background_simple.fragment.glsl"
+	}
+	fragmentShader, err := LoadShader(fsf, FragmentShader)
 	if err != nil {
 		panic(err)
 	}

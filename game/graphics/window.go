@@ -25,7 +25,7 @@ var (
 	pressingMute   bool = false
 )
 
-func Init(width, height int, title string, cc b.Broadcaster, om *o.ObjectManager) {
+func Init(width, height int, title string, animateBg bool, cc b.Broadcaster, om *o.ObjectManager) {
 	controlChannel = cc
 	objectManager = om
 
@@ -60,7 +60,7 @@ func Init(width, height int, title string, cc b.Broadcaster, om *o.ObjectManager
 		}
 	}()
 
-	scene := NewScene(objectManager)
+	scene := NewScene(objectManager, width, height, animateBg)
 
 	for !window.ShouldClose() {
 		if window.GetKey(glfw.KeyEscape) == glfw.Press {

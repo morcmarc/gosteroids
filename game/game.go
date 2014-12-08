@@ -8,12 +8,10 @@ import (
 )
 
 const (
-	Width  int    = 600
-	Height int    = 600
-	Title  string = "Gosteroids"
+	Title string = "Gosteroids"
 )
 
-func Start() {
+func Start(w, h int, animateBg bool) {
 	controlChannel := broadcast.NewBroadcaster()
 	defer controlChannel.Write(nil)
 	controlChannelListener := controlChannel.Listen()
@@ -26,5 +24,5 @@ func Start() {
 
 	audioPlayer.Play("assets/audio/mass.ogg", -1)
 
-	graphics.Init(Width, Height, Title, controlChannel, objectManager)
+	graphics.Init(w, h, Title, animateBg, controlChannel, objectManager)
 }

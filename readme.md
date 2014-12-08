@@ -45,3 +45,18 @@ the shader files.
 ```
 $ ./gosteroids
 ```
+
+Less resource-heavy:
+
+```
+$ ./gosteroids -bg=false
+```
+
+### Usage:
+
+```
+Usage of ./gosteroids:
+  -bg=true: Animate background (requires a decent graphics card)
+  -h=600: Height
+  -w=600: Width
+```
