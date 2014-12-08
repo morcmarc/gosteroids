@@ -10,14 +10,14 @@ import (
 var (
 	width             int
 	height            int
-	animateBackground bool
+	animateBackground int
 )
 
 func init() {
 	runtime.LockOSThread()
-	flag.IntVar(&width, "w", 600, "Width")
-	flag.IntVar(&height, "h", 600, "Height")
-	flag.BoolVar(&animateBackground, "bg", true, "Animate background (requires a decent graphics card)")
+	flag.IntVar(&width, "w", 512, "Width")
+	flag.IntVar(&height, "h", 512, "Height")
+	flag.IntVar(&animateBackground, "bg", 1, "Background quality (0: low, 1: med, 2: high)")
 }
 
 func main() {

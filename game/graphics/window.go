@@ -8,7 +8,6 @@ import (
 
 	"github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
-	"github.com/go-gl/glh"
 	b "github.com/morcmarc/gosteroids/game/broadcast"
 	o "github.com/morcmarc/gosteroids/game/objects"
 	. "github.com/morcmarc/gosteroids/game/shared"
@@ -25,7 +24,7 @@ var (
 	pressingMute   bool = false
 )
 
-func Init(width, height int, title string, animateBg bool, cc b.Broadcaster, om *o.ObjectManager) {
+func Init(width, height int, title string, bgQuality int, cc b.Broadcaster, om *o.ObjectManager) {
 	controlChannel = cc
 	objectManager = om
 
@@ -60,7 +59,7 @@ func Init(width, height int, title string, animateBg bool, cc b.Broadcaster, om 
 		}
 	}()
 
-	scene := NewScene(objectManager, width, height, animateBg)
+	scene := NewScene(objectManager, width, height, bgQuality)
 
 	for !window.ShouldClose() {
 		if window.GetKey(glfw.KeyEscape) == glfw.Press {
@@ -113,13 +112,9 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 		return nil, err
 	}
 
-	// window.SetInputMode(glfw.StickyKeys, 1)
 	window.MakeContextCurrent()
 
 	gl.Init()
-	if err = glh.CheckGLError(); err != nil {
-		// panic(err)
-	}
 
 	renderer := gl.GetString(gl.RENDERER)
 	version := gl.GetString(gl.VERSION)

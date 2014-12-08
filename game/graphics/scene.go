@@ -18,11 +18,11 @@ type SceneObject interface {
 	Delete()
 }
 
-func NewScene(om *o.ObjectManager, w, h int, animateBg bool) *Scene {
+func NewScene(om *o.ObjectManager, w, h, bgQuality int) *Scene {
 	s := &Scene{
 		ObjectManager: om,
 		Spaceship:     NewSpaceship(om.Spaceship),
-		Background:    NewBackground(animateBg),
+		Background:    NewBackground(bgQuality),
 		Score:         NewScore(w, h),
 		Asteroids:     []*Asteroid{},
 		Projectiles:   []*Projectile{},

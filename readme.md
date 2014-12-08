@@ -56,7 +56,7 @@ $ ./gosteroids -bg=false
 
 ```
 Usage of ./gosteroids:
-  -bg=true: Animate background (requires a decent graphics card)
-  -h=600: Height
-  -w=600: Width
+  -bg=1: Background quality (0: low, 1: med, 2: high)
+  -h=512: Height
+  -w=512: Width
 ```
