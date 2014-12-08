@@ -6,6 +6,10 @@ import (
 	o "github.com/morcmarc/gosteroids/game/objects"
 )
 
+var (
+	showingOverlay bool = false
+)
+
 type Scene struct {
 	ObjectManager *o.ObjectManager
 	Background    *Background
@@ -13,6 +17,7 @@ type Scene struct {
 	Asteroids     []*Asteroid
 	Projectiles   []*Projectile
 	Score         *Score
+	Overlay       *Overlay
 }
 
 type SceneObject interface {
@@ -54,7 +59,9 @@ func (s *Scene) Update(ct float32) {
 		fmt.Printf("Hit, P:%d => A:%d\n", hitP, hitA)
 	}
 
-	if s.ObjectManager.CheckCollision() {
+	if s.ObjectManager.CheckCollision() && !showingOverlay {
+		// s.Overlay = NewOverlay(512, 512)
+		// showingOverlay = true
 		s.ObjectManager.Reset()
 		s.Score.Points = 0
 	}
@@ -83,6 +90,9 @@ func (s *Scene) Draw(ct float32) {
 		p.Draw(ct)
 	}
 	s.Score.Draw(ct)
+	// if showingOverlay {
+	// 	s.Overlay.Draw(ct)
+	// }
 }
 
 func (s *Scene) Delete() {

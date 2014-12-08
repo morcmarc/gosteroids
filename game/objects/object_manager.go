@@ -79,6 +79,7 @@ func (o *ObjectManager) FireProjectile() *Projectile {
 
 func (o *ObjectManager) CheckCollision() bool {
 	for _, a := range o.Asteroids {
+		// TODO: replace with Seperating Axis Theorem
 		var dx float64 = (o.Spaceship.Position[0] + o.Spaceship.Radius) - (a.Position[0] + a.Radius)
 		var dy float64 = (o.Spaceship.Position[1] + o.Spaceship.Radius) - (a.Position[1] + a.Radius)
 		var distance float64 = math.Sqrt(dx*dx + dy*dy)
@@ -93,6 +94,7 @@ func (o *ObjectManager) CheckCollision() bool {
 func (o *ObjectManager) CheckHits() (int, int) {
 	for i, p := range o.Projectiles {
 		for j, a := range o.Asteroids {
+			// TODO: replace with Seperating Axis Theorem
 			var dx float64 = (p.Position[0] + 0.003) - (a.Position[0] + a.Radius)
 			var dy float64 = (p.Position[1] + 0.003) - (a.Position[1] + a.Radius)
 			var distance float64 = math.Sqrt(dx*dx + dy*dy)

@@ -57,8 +57,8 @@ func NewFont(filename string, cols, rows, width, height int) *Font {
 	f.GlyphH = ((float32(imgHeight) / float32(rows)) / float32(height)) * 2
 	f.TextureSource = rgbaImg
 
-	vs, _ := LoadShader("assets/shaders/score.vertex.glsl", VertexShader)
-	fs, _ := LoadShader("assets/shaders/score.fragment.glsl", FragmentShader)
+	vs, _ := LoadShader("assets/shaders/textured.vertex.glsl", VertexShader)
+	fs, _ := LoadShader("assets/shaders/textured.fragment.glsl", FragmentShader)
 
 	f.program = NewProgram(vs, fs)
 
