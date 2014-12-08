@@ -85,7 +85,7 @@ func (b *Background) Draw(ct float32) {
 	t.Uniform1f(ct)
 
 	r := b.Program.GetUniformLocation("resolution")
-	r.Uniform2f(b.Width, b.Height)
+	r.Uniform2f(float32(b.Width), float32(b.Height))
 
 	gl.DrawArrays(gl.TRIANGLES, 0, len(b.Vertices))
 }
