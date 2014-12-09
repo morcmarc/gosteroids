@@ -49,10 +49,26 @@ $ ./gosteroids
 Less resource-heavy:
 
 ```
-$ ./gosteroids -bg=false
+$ ./gosteroids -bg=0
 ```
 
-### Usage:
+### Controls
+
+- Throttle (UP)
+- Break (DOWN)
+- Turn left (LEFT)
+- Turn right (RIGHT)
+- Fire (SPACE)
+
+### Misc Controls
+
+- Restart (R)
+- Mute music (M)
+- Volume down (-)
+- Volume up (=)
+- Quit (ESC)
+
+### Usage
 
 ```
 Usage of ./gosteroids:
