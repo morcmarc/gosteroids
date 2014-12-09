@@ -6,10 +6,6 @@ import (
 	o "github.com/morcmarc/gosteroids/game/objects"
 )
 
-var (
-	showingOverlay bool = false
-)
-
 type Scene struct {
 	ObjectManager *o.ObjectManager
 	Background    *Background
@@ -17,7 +13,7 @@ type Scene struct {
 	Asteroids     []*Asteroid
 	Projectiles   []*Projectile
 	Score         *Score
-	Overlay       *Overlay
+	gameOver      bool
 }
 
 type SceneObject interface {
@@ -33,6 +29,7 @@ func NewScene(om *o.ObjectManager, w, h, bgQuality int) *Scene {
 		Score:         NewScore(w, h),
 		Asteroids:     []*Asteroid{},
 		Projectiles:   []*Projectile{},
+		gameOver:      false,
 	}
 
 	for _, ao := range om.Asteroids {
@@ -53,20 +50,9 @@ func (s *Scene) Fire() {
 
 func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
-
-	hitP, hitA := s.ObjectManager.CheckHits()
-	if hitP > -1 && hitA > -1 {
-		fmt.Printf("Hit, P:%d => A:%d\n", hitP, hitA)
+	if !s.gameOver {
+		s.Score.Points += 1
 	}
-
-	if s.ObjectManager.CheckCollision() && !showingOverlay {
-		// s.Overlay = NewOverlay(512, 512)
-		// showingOverlay = true
-		s.ObjectManager.Reset()
-		s.Score.Points = 0
-	}
-
-	s.Score.Points += 1
 	// TODO: remove indirect reference
 	for i, p := range s.Projectiles {
 		if p == nil {
@@ -78,6 +64,28 @@ func (s *Scene) Update(ct float32) {
 			s.Projectiles = s.Projectiles[:len(s.Projectiles)-1]
 		}
 	}
+	hitP, hitA := s.CheckHits()
+	if hitP > -1 && hitA > -1 {
+		fmt.Printf("Hit, P:%d => A:%d\n", hitP, hitA)
+	}
+}
+
+func (s *Scene) GameOver() {
+	s.gameOver = true
+}
+
+func (s *Scene) CheckCollision() bool {
+	return s.ObjectManager.CheckCollision()
+}
+
+func (s *Scene) CheckHits() (int, int) {
+	return s.ObjectManager.CheckHits()
+}
+
+func (s *Scene) Reset() {
+	s.gameOver = false
+	s.Score.Points = 0
+	s.ObjectManager.Reset()
 }
 
 func (s *Scene) Draw(ct float32) {
@@ -90,9 +98,6 @@ func (s *Scene) Draw(ct float32) {
 		p.Draw(ct)
 	}
 	s.Score.Draw(ct)
-	// if showingOverlay {
-	// 	s.Overlay.Draw(ct)
-	// }
 }
 
 func (s *Scene) Delete() {

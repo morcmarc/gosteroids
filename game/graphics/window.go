@@ -15,13 +15,16 @@ import (
 
 var (
 	controlChannel b.Broadcaster
+	objectManager  *o.ObjectManager
 	ticker         *time.Ticker
 	bulletTime     *time.Ticker
-	canFire        bool
-	hasTicked      bool
+	canFire        bool    = false
+	hasTicked      bool    = false
 	currentTime    float32 = 0.0
-	objectManager  *o.ObjectManager
-	pressingMute   bool = false
+	pressingMute   bool    = false
+	gameOver       bool    = false
+	halfFPS        bool    = false
+	halfFPSCounter int     = 0
 )
 
 func Init(width, height int, title string, bgQuality int, cc b.Broadcaster, om *o.ObjectManager) {
@@ -43,13 +46,17 @@ func Init(width, height int, title string, bgQuality int, cc b.Broadcaster, om *
 	bulletTime = time.NewTicker(100 * time.Millisecond)
 	defer bulletTime.Stop()
 
-	hasTicked = false
-	canFire = false
-
 	go func() {
 		for _ = range ticker.C {
 			currentTime += 0.008
-			hasTicked = true
+			halfFPSCounter++
+			if halfFPS {
+				if halfFPSCounter%2 == 0 {
+					hasTicked = true
+				}
+			} else {
+				hasTicked = true
+			}
 		}
 	}()
 
@@ -58,6 +65,39 @@ func Init(width, height int, title string, bgQuality int, cc b.Broadcaster, om *
 			canFire = true
 		}
 	}()
+
+	// TODO: make this work
+	// // Init framebuffer
+	// fb := gl.GenFramebuffer()
+	// fb.Bind()
+	// defer fb.Unbind()
+	// defer fb.Delete()
+
+	// // Init framebuffer texture for post-processing
+	// ft := gl.GenTexture()
+	// ft.Bind(gl.TEXTURE_2D)
+	// defer ft.Unbind(gl.TEXTURE_2D)
+
+	// // Empty texture
+	// gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, make([]float32, width*height))
+
+	// // Poor filtering. Needed !
+	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+
+	// // Depth buffer
+	// rb := gl.GenRenderbuffer()
+	// rb.Bind()
+	// defer rb.Unbind()
+
+	// gl.RenderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT, width, height)
+	// gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, 0, ft, 0)
+
+	// gl.DrawBuffer(gl.COLOR_ATTACHMENT0)
+
+	// if gl.CheckFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE {
+	// 	fmt.Println("Framebuffer is not supported")
+	// }
 
 	scene := NewScene(objectManager, width, height, bgQuality)
 
@@ -73,9 +113,16 @@ func Init(width, height int, title string, bgQuality int, cc b.Broadcaster, om *
 		// Update state?
 		if hasTicked {
 			glfw.PollEvents()
-			checkMovementKeys(window, controlChannel)
+			checkMovementKeys(window, scene, controlChannel)
 			scene.Update(currentTime)
 			hasTicked = false
+		}
+
+		// Game over?
+		if scene.CheckCollision() && !gameOver {
+			halfFPS = true
+			gameOver = true
+			scene.GameOver()
 		}
 
 		// Can fire?
@@ -128,7 +175,7 @@ func initGL(width, height int, title string) (*glfw.Window, error) {
 	return window, nil
 }
 
-func checkMovementKeys(window *glfw.Window, cc b.Broadcaster) {
+func checkMovementKeys(window *glfw.Window, scene *Scene, cc b.Broadcaster) {
 	u := window.GetKey(glfw.KeyUp)
 	d := window.GetKey(glfw.KeyDown)
 	l := window.GetKey(glfw.KeyLeft)
@@ -136,23 +183,34 @@ func checkMovementKeys(window *glfw.Window, cc b.Broadcaster) {
 	n := window.GetKey(glfw.KeyMinus)
 	p := window.GetKey(glfw.KeyEqual)
 	m := window.GetKey(glfw.KeyM)
+	restart := window.GetKey(glfw.KeyR)
 
-	if l == glfw.Press {
-		cc.Write(Left)
+	// Only allow controls when player is still in game
+	if !gameOver {
+		if l == glfw.Press {
+			cc.Write(Left)
+		}
+
+		if r == glfw.Press {
+			cc.Write(Right)
+		}
+
+		if u == glfw.Press {
+			cc.Write(Throttle)
+		}
+
+		if d == glfw.Press {
+			cc.Write(Break)
+		}
+	} else {
+		if restart == glfw.Press {
+			gameOver = false
+			halfFPS = false
+			scene.Reset()
+		}
 	}
 
-	if r == glfw.Press {
-		cc.Write(Right)
-	}
-
-	if u == glfw.Press {
-		cc.Write(Throttle)
-	}
-
-	if d == glfw.Press {
-		cc.Write(Break)
-	}
-
+	// Generic controls
 	if n == glfw.Press {
 		cc.Write(VolumeDown)
 	}
@@ -177,7 +235,7 @@ func checkActionKeys(window *glfw.Window, scene *Scene) {
 	// have access to the OpenGL context and will throw an error. See the
 	// runtime.LockOSThread() call in main.go.
 	f := window.GetKey(glfw.KeySpace)
-	if f == glfw.Press {
+	if f == glfw.Press && !gameOver {
 		scene.Fire()
 	}
 }
