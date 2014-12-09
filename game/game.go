@@ -11,7 +11,7 @@ const (
 	title string = "Gosteroids"
 )
 
-func Start(w, h, bgQuality int) {
+func Start(w, h, bgQuality int, noMusic bool) {
 	controlChannel := broadcast.NewBroadcaster()
 	defer controlChannel.Write(nil)
 	controlChannelListener := controlChannel.Listen()
@@ -22,7 +22,9 @@ func Start(w, h, bgQuality int) {
 	go objectManager.Listen(controlChannelListener)
 	go audioPlayer.Listen(controlChannelListener)
 
-	audioPlayer.Play("assets/audio/mass.ogg", -1)
+	if !noMusic {
+		audioPlayer.Play("assets/audio/mass.ogg", -1)
+	}
 
 	graphics.Init(w, h, title, bgQuality, controlChannel, objectManager)
 }
