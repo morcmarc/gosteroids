@@ -78,7 +78,10 @@ func (s *Scene) Update(ct float32) {
 	hitP, hitA := s.CheckHits()
 	if hitP != [16]byte{} && hitA != [16]byte{} {
 		pointVal := int(s.Asteroids[hitA].AObject.Radius * float64(1000))
+
 		s.Score.Points += pointVal
+
+		s.SplitAsteroid(s.Asteroids[hitA])
 		s.RemoveAsteroid(hitA)
 		s.RemoveProjectile(hitP)
 	}
@@ -86,6 +89,28 @@ func (s *Scene) Update(ct float32) {
 
 func (s *Scene) GameOver() {
 	s.gameOver = true
+}
+
+func (s *Scene) SplitAsteroid(a *Asteroid) {
+	newRadius := a.AObject.Radius / 2
+	newPosition := a.AObject.Position
+
+	if newRadius < 0.02 {
+		return
+	}
+
+	ao1 := o.NewAsteroid()
+	ao1.Radius = newRadius
+	ao1.Position = newPosition
+	ao2 := o.NewAsteroid()
+	ao2.Radius = newRadius
+	ao2.Position = newPosition
+	s.ObjectManager.AddAsteroid(ao1)
+	s.ObjectManager.AddAsteroid(ao2)
+	a1 := NewAsteroid(ao1)
+	a2 := NewAsteroid(ao2)
+	s.AddAsteroid(a1)
+	s.AddAsteroid(a2)
 }
 
 func (s *Scene) CheckCollision() bool {
