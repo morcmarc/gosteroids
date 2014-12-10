@@ -1,17 +1,16 @@
 package graphics
 
 import (
-	"fmt"
-
 	o "github.com/morcmarc/gosteroids/game/objects"
+	"github.com/satori/go.uuid"
 )
 
 type Scene struct {
 	ObjectManager *o.ObjectManager
 	Background    *Background
 	Spaceship     *Spaceship
-	Asteroids     []*Asteroid
-	Projectiles   []*Projectile
+	Asteroids     map[uuid.UUID]*Asteroid
+	Projectiles   map[uuid.UUID]*Projectile
 	Score         *Score
 	gameOver      bool
 }
@@ -27,15 +26,12 @@ func NewScene(om *o.ObjectManager, w, h, bgQuality int) *Scene {
 		Spaceship:     NewSpaceship(om.Spaceship),
 		Background:    NewBackground(w, h, bgQuality),
 		Score:         NewScore(w, h),
-		Asteroids:     []*Asteroid{},
-		Projectiles:   []*Projectile{},
+		Asteroids:     map[uuid.UUID]*Asteroid{},
+		Projectiles:   map[uuid.UUID]*Projectile{},
 		gameOver:      false,
 	}
 
-	for _, ao := range om.Asteroids {
-		a := NewAsteroid(ao)
-		s.Asteroids = append(s.Asteroids, a)
-	}
+	s.Reset()
 
 	return s
 }
@@ -43,30 +39,48 @@ func NewScene(om *o.ObjectManager, w, h, bgQuality int) *Scene {
 func (s *Scene) Fire() {
 	po := s.ObjectManager.FireProjectile()
 	p := NewProjectile(po)
-	// TODO: remove indirect reference
-	s.ObjectManager.Projectiles = append(s.ObjectManager.Projectiles, po)
-	s.Projectiles = append(s.Projectiles, p)
+	s.AddProjectile(p)
+}
+
+func (s *Scene) AddAsteroid(a *Asteroid) {
+	s.Asteroids[a.AObject.Id] = a
+}
+
+func (s *Scene) AddProjectile(p *Projectile) {
+	s.Projectiles[p.PSObject.Id] = p
+}
+
+func (s *Scene) RemoveAsteroid(id uuid.UUID) {
+	// s.Asteroids[id].Delete()
+	s.ObjectManager.RemoveAsteroid(id)
+	delete(s.Asteroids, id)
+}
+
+func (s *Scene) RemoveProjectile(id uuid.UUID) {
+	// s.Projectiles[id].Delete()
+	s.ObjectManager.RemoveProjectile(id)
+	delete(s.Projectiles, id)
 }
 
 func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
+
 	if !s.gameOver {
 		s.Score.Points += 1
 	}
-	// TODO: remove indirect reference
-	for i, p := range s.Projectiles {
-		if p == nil {
-			continue
-		}
+
+	for _, p := range s.Projectiles {
 		if p.PSObject.IsOffScreen() {
-			copy(s.Projectiles[i:], s.Projectiles[i+1:])
-			s.Projectiles[len(s.Projectiles)-1] = nil
-			s.Projectiles = s.Projectiles[:len(s.Projectiles)-1]
+			s.RemoveProjectile(p.PSObject.Id)
 		}
 	}
+
 	hitP, hitA := s.CheckHits()
-	if hitP > -1 && hitA > -1 {
-		fmt.Printf("Hit, P:%d => A:%d\n", hitP, hitA)
+	if hitP != [16]byte{} && hitA != [16]byte{} {
+		pointVal := int(s.Asteroids[hitA].AObject.Radius * float64(1000))
+		s.Score.Points += pointVal
+		s.RemoveAsteroid(hitA)
+		s.RemoveProjectile(hitP)
 	}
 }
 
@@ -78,7 +92,7 @@ func (s *Scene) CheckCollision() bool {
 	return s.ObjectManager.CheckCollision()
 }
 
-func (s *Scene) CheckHits() (int, int) {
+func (s *Scene) CheckHits() (uuid.UUID, uuid.UUID) {
 	return s.ObjectManager.CheckHits()
 }
 
@@ -86,6 +100,15 @@ func (s *Scene) Reset() {
 	s.gameOver = false
 	s.Score.Points = 0
 	s.ObjectManager.Reset()
+
+	for _, a := range s.Asteroids {
+		s.RemoveAsteroid(a.AObject.Id)
+	}
+
+	for _, ao := range s.ObjectManager.Asteroids {
+		a := NewAsteroid(ao)
+		s.AddAsteroid(a)
+	}
 }
 
 func (s *Scene) Draw(ct float32) {

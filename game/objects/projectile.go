@@ -2,6 +2,8 @@ package objects
 
 import (
 	"math"
+
+	"github.com/satori/go.uuid"
 )
 
 const (
@@ -10,12 +12,14 @@ const (
 
 type Projectile struct {
 	Object
+	Id       uuid.UUID
 	Position [3]float64
 	Velocity [2]float64
 }
 
 func NewProjectile(pos [3]float64) *Projectile {
 	p := &Projectile{
+		Id:       uuid.NewV4(),
 		Position: pos,
 		Velocity: [2]float64{0.0, 0.0},
 	}

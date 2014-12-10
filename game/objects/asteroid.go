@@ -2,10 +2,12 @@ package objects
 
 import (
 	. "github.com/morcmarc/gosteroids/game/shared"
+	"github.com/satori/go.uuid"
 )
 
 type Asteroid struct {
 	Object
+	Id       uuid.UUID
 	Radius   float64
 	Position [3]float64
 	Velocity [3]float64
@@ -25,6 +27,7 @@ func (a *Asteroid) Reset() {
 	vy := RandFloat64nInRange(-1.0, 1.0)
 	vr := RandFloat64nInRange(-1.0, 1.0)
 
+	a.Id = uuid.NewV4()
 	a.Radius = r
 	a.Position = [3]float64{x, y, 0.0}
 	a.Velocity = [3]float64{vx / 500, vy / 500, vr / 100}

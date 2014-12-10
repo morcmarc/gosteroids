@@ -116,13 +116,12 @@ func Init(width, height int, title string, bgQuality int, cc b.Broadcaster, om *
 			checkMovementKeys(window, scene, controlChannel)
 			scene.Update(currentTime)
 			hasTicked = false
-		}
-
-		// Game over?
-		if scene.CheckCollision() && !gameOver {
-			halfFPS = true
-			gameOver = true
-			scene.GameOver()
+			// Game over?
+			if scene.CheckCollision() && !gameOver {
+				halfFPS = true
+				gameOver = true
+				scene.GameOver()
+			}
 		}
 
 		// Can fire?
