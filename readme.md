@@ -76,3 +76,13 @@ Usage of ./gosteroids:
   -h=512: Height
   -w=512: Width
 ```
+
+## Roadmap
+
+- Replace GLFW3 with SDL2 for less run-time dependencies
+- Use FBO instead of direct rendering and add post-processing effects
+- Replace primitive collision detection with SAT
+- Refactor scene object
+- Fine tune firing rate
+- Game over animation
+- Menu and HUD
