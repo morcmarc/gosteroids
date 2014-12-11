@@ -53,10 +53,10 @@ func (s *Spaceship) Reset() {
 func (s *Spaceship) Rotate(dir uint8) {
 	switch dir {
 	case Left:
-		s.Position[2] -= 0.035
+		s.Position[2] -= 0.045
 		break
 	case Right:
-		s.Position[2] += 0.035
+		s.Position[2] += 0.045
 		break
 	}
 }

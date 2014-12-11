@@ -30,7 +30,7 @@ func (a *Asteroid) Reset() {
 	a.Id = uuid.NewV4()
 	a.Radius = r
 	a.Position = [3]float64{x, y, 0.0}
-	a.Velocity = [3]float64{vx / 500, vy / 500, vr / 100}
+	a.Velocity = [3]float64{vx / 250, vy / 250, vr / 50}
 }
 
 func (a *Asteroid) Update() {

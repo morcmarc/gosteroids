@@ -43,7 +43,7 @@ func Init(width, height int, title string, bgQuality int, cc b.Broadcaster, om *
 	defer ticker.Stop()
 
 	// Set firing interval
-	bulletTime = time.NewTicker(300 * time.Millisecond)
+	bulletTime = time.NewTicker(200 * time.Millisecond)
 	defer bulletTime.Stop()
 
 	go func() {
