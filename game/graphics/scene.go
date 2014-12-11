@@ -65,10 +65,6 @@ func (s *Scene) RemoveProjectile(id uuid.UUID) {
 func (s *Scene) Update(ct float32) {
 	s.ObjectManager.Update()
 
-	if !s.gameOver {
-		s.Score.Points += 1
-	}
-
 	for _, p := range s.Projectiles {
 		if p.PSObject.IsOffScreen() {
 			s.RemoveProjectile(p.PSObject.Id)
@@ -84,10 +80,16 @@ func (s *Scene) Update(ct float32) {
 		s.SplitAsteroid(s.Asteroids[hitA])
 		s.RemoveAsteroid(hitA)
 		s.RemoveProjectile(hitP)
+
+		if len(s.Asteroids) == 0 {
+			s.ObjectManager.NumberOfAsteroids += 5
+			s.Reset()
+		}
 	}
 }
 
 func (s *Scene) GameOver() {
+	s.ObjectManager.NumberOfAsteroids = 10
 	s.gameOver = true
 }
 

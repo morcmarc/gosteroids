@@ -9,16 +9,18 @@ import (
 )
 
 type ObjectManager struct {
-	Spaceship   *Spaceship
-	Asteroids   map[uuid.UUID]*Asteroid
-	Projectiles map[uuid.UUID]*Projectile
+	Spaceship         *Spaceship
+	Asteroids         map[uuid.UUID]*Asteroid
+	Projectiles       map[uuid.UUID]*Projectile
+	NumberOfAsteroids int
 }
 
 func NewObjectManager() *ObjectManager {
 	om := &ObjectManager{
-		Spaceship:   NewSpaceship(),
-		Asteroids:   map[uuid.UUID]*Asteroid{},
-		Projectiles: map[uuid.UUID]*Projectile{},
+		Spaceship:         NewSpaceship(),
+		Asteroids:         map[uuid.UUID]*Asteroid{},
+		Projectiles:       map[uuid.UUID]*Projectile{},
+		NumberOfAsteroids: 10,
 	}
 
 	om.Reset()
@@ -43,7 +45,7 @@ func (o *ObjectManager) Reset() {
 		o.RemoveAsteroid(a.Id)
 	}
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < o.NumberOfAsteroids; i++ {
 		a := NewAsteroid()
 		o.AddAsteroid(a)
 	}
