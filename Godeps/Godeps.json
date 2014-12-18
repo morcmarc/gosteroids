@@ -15,12 +15,8 @@
 			"Rev": "4fb015d6b051418b3044ca7fdb48d2e6cfcba0ca"
 		},
 		{
-			"ImportPath": "github.com/go-gl/glh",
-			"Rev": "c59bc232e0086f2af1751cee85a3b233a9ab3b34"
-		},
-		{
-			"ImportPath": "github.com/go-gl/glu",
-			"Rev": "259c0c56e294d50d00859fae707e76b6231241e0"
+			"ImportPath": "github.com/satori/go.uuid",
+			"Rev": "a07c134f8289edd9ac6ee6f0aa5f3d345f4aaf27"
 		},
 		{
 			"ImportPath": "github.com/veandco/go-sdl2/sdl",
